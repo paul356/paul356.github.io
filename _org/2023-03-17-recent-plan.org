@@ -1,0 +1,33 @@
+#+BEGIN_EXPORT html
+---
+layout: post
+title: 2023计划
+excerpt: 2023计划
+---
+#+END_EXPORT
+* 近期目标
+Objects:
+| ID | Plan                 | Content                   | Time      | Priority |
+|----+----------------------+---------------------------+-----------+----------|
+|  1 | Job Seek             | Find Job Information      | 2023 H1   | H        |
+|  2 | Prepare PHD          | IELTS, Paper Writing      | 2023 H1   | M        |
+|  3 | Open Source Research | HTAP - Index + Iceberg    | 2023 Full | H        |
+|  4 | Open Source Research | Intelligent Index         | 2023 Full | M        |
+|  5 | Hobbyist Hardware    | Keyboard, Devboards, Blog | 2023 H1   | H        |
+|  6 | Exercise             | Body Build                | 2023 Full | H        |
+|  7 | Open Source Research | Read Paper                | 2023 Full | H        |
+
+* 每日计划
+Everyday schedule:
+| Periods\Weekday | Monday | Tuesday | Wendesday | Thursday | Friday | Staturday  | Sunday     |
+|-----------------+--------+---------+-----------+----------+--------+------------+------------|
+| 09:00 ~ 10:30   |      3 |       3 |         3 |        3 |      3 | Free Style | Free Style |
+| 10:30 ~ 12:00   |      2 |       2 |         2 |        2 |      2 |            |            |
+| 12:00 ~ 14:00   |      6 |       6 |         6 |        6 |      6 |            |            |
+| 14:00 ~ 15:30   |      5 |       5 |         5 |        5 |      5 |            |            |
+| 15:30 ~ 17:00   |      X |       X |         X |        X |      X |            |            |
+| 17:00 ~ 18:00   |      7 |       7 |         7 |        7 |      7 |            |            |
+| 19:00 ~ 21:00   |      X |       X |         X |        X |      X |            |            |
+| 21:00 ~ 22:00   |      1 |       1 |         1 |        1 |      1 |            |            |
+
+

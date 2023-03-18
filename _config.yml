@@ -1,8 +1,8 @@
-title: Just the Docs Template
-description: A starter template for a Jeykll site using the Just the Docs theme!
+title: paul356's Blog
+description: Personal Thoughts on Technology and Related
 theme: just-the-docs
 
-url: https://just-the-docs.github.io
+url: https://paul356.github.io
 
 aux_links:
   Template Repository: https://github.com/just-the-docs/just-the-docs-template

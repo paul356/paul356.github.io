@@ -1,0 +1,49 @@
+#+STARTUP: showall indent
+#+STARTUP: hidestars
+#+OPTIONS: ^:nil
+#+BEGIN_EXPORT html
+---
+layout: post
+title: Spark数据湖
+excerpt: Spark数据湖
+---
+#+END_EXPORT
+* Spark数据湖
+
+** 如果在spark中使用iceberg
+#+BEGIN_SRC bash
+  spark-shell --packages org.apache.iceberg:iceberg-spark-runtime-3.3_2.12:1.1.0 \
+              --conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions \
+              --conf spark.sql.catalog.spark_catalog=org.apache.iceberg.spark.SparkSessionCatalog \
+              --conf spark.sql.catalog.spark_catalog.type=hive \
+              --conf spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog \
+              --conf spark.sql.catalog.local.type=hadoop \
+              --conf spark.sql.catalog.local.warehouse=$PWD/warehouse \
+              --conf spark.driver.extraJavaOptions=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=4747
+#+END_SRC
+
+** spark写流程
+- V2TableWriteExec in WriteToDataSourceV2Exec.scala
+
+** TODO 支持分层的数据湖格式
+- 基于lsm结构组织文件
+  + 第一层采用tiering的方式排布
+  + 第二层以上采用leveling的方式组织
+  + 行是否唯一
+- 共享索引结构
+  + 通过MVCC支持一写多读
+  + 对第一层的数据进行索引
+    - 使用什么列来做索引内容
+    - 索引指针是什么
+  + 二层索引
+    - 第一层range索引
+    - 第二层文件内索引
+- 读数据
+  + 逐层读取数据，再做数据合并
+  + 多个partition并发查询，从第一层过滤自己感兴趣的数据
+- 写数据
+  + 先写到第一层，再聚合起来下降到下层
+  + 写类型
+    - [X] insert into
+    - [ ] merge into
+    - [ ] insert overwrite
