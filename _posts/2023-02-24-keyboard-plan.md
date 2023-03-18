@@ -1,7 +1,8 @@
 ---
-layout: post
+layout: default
 title: 键盘计划
 excerpt: 键盘计划
+nav_order: {{ page.date }}
 ---
 
 

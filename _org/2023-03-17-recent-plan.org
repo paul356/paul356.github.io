@@ -1,8 +1,9 @@
 #+BEGIN_EXPORT html
 ---
-layout: post
+layout: default
 title: 2023计划
 excerpt: 2023计划
+nav_order: {{ page.date }}
 ---
 #+END_EXPORT
 * 近期目标

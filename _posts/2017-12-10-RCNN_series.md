@@ -1,7 +1,7 @@
 ---
-layout: post
-title: "RCNN、SPPNET、Fast-RCNN、Faster-RCNN比较学习"
-tags:
+layout: default
+title: RCNN、SPPNET、Fast-RCNN、Faster-RCNN比较学习
+nav_order: {{ page.date }}
 ---
 RCNN是目前最准确的图像目标检测方法之一，一直是[Imagenet][1]获奖的热门算法。RCNN从发表出来，出现了SPPNET、Fast-RCNN、Faster-RCNN等一系列改进。学习和比较其中的演进一定可以帮助我们更深刻理解这一类方法。
 

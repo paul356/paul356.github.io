@@ -1,7 +1,7 @@
 ---
-layout: post
+layout: default
 title: "为什么说Clojure是一门好语言"
-tags:
+nav_order: {{ page.date }}
 ---
 Clojure是Rich Hickey发明的Lisp方言。Clojure选择JVM或CLR作为其运行环境。Clojure代码在运行前会被编译成Java字节码，因此Clojure可以很方便地调用Java代码，且具有不错的运行速度。了解过Lisp的人都对高阶函数，宏，laziness，map等语言特性着迷不已，但是由于其性能不足等原因，在实际生产中却很少见到Lisp的身影。Clojure是一种可以广泛用于实际生产的Lisp方言，除了性能之外Clojure还有很多其它优点。
 

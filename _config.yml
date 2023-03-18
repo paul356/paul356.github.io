@@ -5,4 +5,9 @@ theme: just-the-docs
 url: https://paul356.github.io
 
 aux_links:
-  Template Repository: https://github.com/just-the-docs/just-the-docs-template
+  paul356's Github: https://github.com/paul356
+
+just_the_docs:
+    collections:
+        posts:
+            name: Posts

@@ -1,4 +1,12 @@
 #+OPTIONS: ^:nil
+#+BEGIN_EXPORT html
+---
+layout: default
+title: Spark数据湖
+excerpt: Spark数据湖
+nav_order: {{ page.date }}
+---
+#+END_EXPORT
 
 * Keyboard design
 

@@ -3,9 +3,10 @@
 #+OPTIONS: ^:nil
 #+BEGIN_EXPORT html
 ---
-layout: post
+layout: default
 title: 胡思乱想
 excerpt: 胡思乱想
+nav_order: {{ page.date }}
 ---
 #+END_EXPORT
 最近有不少的怪诞想法，在这里记录一下，防止自己忘记，也许其中一部分还能成为现实。
