@@ -11,3 +11,7 @@ just_the_docs:
     collections:
         posts:
             name: Posts
+
+
+plugins:
+    - jekyll-feed

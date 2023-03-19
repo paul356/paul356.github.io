@@ -1,7 +1,7 @@
 ---
 layout: default
 title: 键盘计划
-excerpt: 键盘计划
+tags: [键盘, 计划]
 nav_order: {{ page.date }}
 ---
 

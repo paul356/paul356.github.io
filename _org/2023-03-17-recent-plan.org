@@ -2,7 +2,7 @@
 ---
 layout: default
 title: 2023计划
-excerpt: 2023计划
+tags: [2023, plan]
 nav_order: {{ page.date }}
 ---
 #+END_EXPORT
