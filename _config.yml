@@ -12,6 +12,5 @@ just_the_docs:
         posts:
             name: Posts
 
-
 plugins:
     - jekyll-feed

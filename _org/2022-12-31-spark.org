@@ -26,7 +26,7 @@ nav_order: {{ page.date }}
 ** spark写流程
 - V2TableWriteExec in WriteToDataSourceV2Exec.scala
 
-** TODO 支持分层的数据湖格式
+** TODO 支持分层的数据湖格式（HTAP）
 - 基于lsm结构组织文件
   + 第一层采用tiering的方式排布
   + 第二层以上采用leveling的方式组织
