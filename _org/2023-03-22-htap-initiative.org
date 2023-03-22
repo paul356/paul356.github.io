@@ -8,7 +8,9 @@ nav_order: {{ page.date }}
 ---
 #+END_EXPORT
 
-* What is the plan?
+* HTAP Initiative
+
+** The Goal
 Now there are main classes of databases. One class is optimized for
 OLTP, like Oracle, SQL Server, MySQL, etc. The other class is for OLAP
 tasks. This class includes warehouse systems, like SAP HANA, Hive, Iceberg,
@@ -20,18 +22,18 @@ consideration. This is not an easy task, but with good examples of
 open source systems. We can address this task by adding the part
 needed by OLTP to open source OLAP systems.
 
-* The method that we will use.
+** The Plan
 OLTP systems can deal with random queries and data mutations very
 quickly, because OLTP systems have delicate designed index and data
 layout formats. These systems can pin-point a small set of data
 quickly. Such design is something that we find missing in open source
 OLAP systems. To make this task more practical we choose to enhance
-Apache Iceberg and make necessary optimizations. Apache
-Iceberg is one of the best datalake systems. It can be used along with Spark to
+Apache Iceberg and make necessary optimizations. [[https://iceberg.apache.org][Apache
+Iceberg]] is one of the best datalake systems. It can be used along with Spark to
 serve relational tables. Users can use SQL to run queries and modifications. The data in Apache
 Spark is distributed into partitions, which is called partitioning. Partitioning works by assigning data with same values in partition
-columns in the same partition. Besides partitoning Apache Iceberg utilizes json files and
-manifest files (Avro format) to build an index. It is used to
+columns in the same partition. Besides partitoning Apache Iceberg [[https://iceberg.apache.org/spec/][utilizes json files and
+manifest files (Avro format)]] to build an index. It is used to
 boost data file location. This index structure is suitable for batch process
 tasks which often go through whole data files. Considering OLTP tasks there are two limits
 with such design. The first limit is that partition selection requires
@@ -68,7 +70,7 @@ of the data format and new indexes it can also handle record level
 data change more efficiently. With the new indexes the new system also
 can serve data queries efficiently.
 
-* Other considerations
+** Other considerations
 Beside these two optimizations we plan to use open source
 components as many as possible. Parquet, Avro are good
 candidates. These projects should be used as data file and log file
