@@ -8,19 +8,21 @@ nav_order: {{ page.date }}
 ---
 #+END_EXPORT
 
-* 什么是ESP32？
+* 创建利器之ESP32（一）
+
+** 什么是ESP32？
 ESP32狭义上指的是乐鑫信息科技推出的一类面向物联网应用的嵌入式SoC(System
 on Chip)芯片，广义上还可以指基于ESP32的软硬件产品。ESP32芯片基于Xtensa LX6
-32-bit处理核心研发，并增加Wifi等无线通讯功能，具有单核和双核等不同版本。芯片本身就支持Wifi、蓝牙、
+32-bit处理核心研发，并增加WiFi等无线通讯功能，具有单核和双核等不同版本。芯片本身就支持WiFi、蓝牙、
 USB、GPIO等多种无线和有线接口，不需要再增加接口芯片。可以方便地应用于
 智慧农业、工业检测、智能家居等
-IoT场景。这种身材灵巧并且功能强大的芯片很受创客社区的欢迎。在Arduino、CircuitPython等开发平台中
+IoT场景。这种身材灵巧并且功能强大的芯片很受创客社区的欢迎。在Arduino、MicroPython等开发平台中
 都增加了对ESP32的支持。乐鑫和创客社区推出了很多具有USB接口的开发板，
 插入电脑即可编程，非常方便。有Arduino和Python编程经验的人，可以很快掌握如何在
 项目中使用ESP32模块。ESP32是一款容易上手且功能强大的物联网芯片，既适合
 电子爱好者也适合专业人士，有广阔的应用前景。
 
-* ESP32可以用来做什么？
+** ESP32可以用来做什么？
 因为ESP32支持丰富接口协议，和丰富的应用程序库esp-idf，开发者可以很快地
 开发出应用程序，不需要详细了解底层硬件协议。ESP32可以用来控制智能小车、
 智能电路、智能手表等，用户可以根据自己的创意开发新的使用场景。国内外的创
@@ -31,28 +33,175 @@ IoT场景。这种身材灵巧并且功能强大的芯片很受创客社区的�
 我们可以利用ESP32帮助我们控制家里的电器、自动投喂宠物等等功能，具体能做什
 么取决于使用者的想象力。
 
-* 快速玩转ESP32
+** 快速玩转ESP32
 乐鑫提供了esp-idf环境和ESP32应用程序库，提供给开发者使用，不过需要使用
 者有一定的编程经验。最近由于arduino-esp32开源社区的努力，我们现在可以使用Arduino软件来编写
 ESP32程序，将ESP32的使用门槛降低了不
 少。下面我们通过一个例子介绍使用Arduino来开发ESP32程序。我们的任务是用ESP32演奏一段“欢乐颂”。首先我们需要先准备下列硬件：
 1. ESP32开发版（type-c和mini-usb接口的都可以）
-2. 蜂鸣器
-3. 导线若干
 4. USB-A转换线（根据开发板的接口类型选择）
 市面上有很多ESP32开发板。乐鑫科技自己也有ESP32开发板，还有很多小公司和
 个人推出的克隆板。淘宝上面很多，大约二十元到五十元不等，都可以使用。
 准备好硬件后，我们可以开始准备开发程序了。这里使用Mac上的Arduino软件作为示例，PC上的操作步骤应该也类似。Arduino软件默认
 只支持Arduino系列开发版，我们还需要做一些配置使得Arduino支持ESP32。不
-过不用担心，步骤比较简单。
-/描述如何配置Arduino，支持ESP32开发板/
+过不用担心，步骤比较简单。首先安装Arduino程序，可以从[[https://www.arduino.cc/en/software][Arduino.cc]]下
+载程序。安装好程序后，运行arduino程序。然后是设置开发板信息，Arduino
+程序支持扩展支持的开发板。具体设置分为两步，第一步打开首选项菜单。
+[[/images/open_preferences.jpg]]
+设置扩展的开发板描述信息，链接如下，可能需要使用科学上网法。
+#+begin_example
+https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+#+end_example
+[[/images/board_json.jpg]]
+第二步是安装arduino-esp32扩展，打开"开发版管理器 ..."。[[images/board_mgmt.jpg]]等待索引刷新完
+成，找到esp32，点击安装。 [[images/install_esp32.jgp]]
 
+ESP32和其他开发板的优势就是支持Wifi和蓝牙等无线协议。所以下面就通过一
+个示例介绍如何利用Arduino WiFi api查看有哪些无限AP可以接入。下面看
+这个代码示例，[[https://github.com/espressif/arduino-esp32/blob/master/libraries/WiFi/examples/WiFiScan/WiFiScan.ino][代码]]来自arduino-esp32项目。可以通过Arduino的菜单项，"文件"->"示例
+"->"WiFi"->"WiFiScan"，找到这个例子。
+#+begin_src c
+/*
+ *  This sketch demonstrates how to scan WiFi networks.
+ *  The API is based on the Arduino WiFi Shield library, but has significant changes as newer WiFi functions are supported.
+ *  E.g. the return value of `encryptionType()` different because more modern encryption is supported.
+ */
+#include "WiFi.h"
 
+void setup()
+{
+    Serial.begin(115200);
 
-* 总结
+    // Set WiFi to station mode and disconnect from an AP if it was previously connected.
+    WiFi.mode(WIFI_STA);
+    WiFi.disconnect();
+    delay(100);
+
+    Serial.println("Setup done");
+}
+
+void loop()
+{
+    Serial.println("Scan start");
+
+    // WiFi.scanNetworks will return the number of networks found.
+    int n = WiFi.scanNetworks();
+    Serial.println("Scan done");
+    if (n == 0) {
+        Serial.println("no networks found");
+    } else {
+        Serial.print(n);
+        Serial.println(" networks found");
+        Serial.println("Nr | SSID                             | RSSI | CH | Encryption");
+        for (int i = 0; i < n; ++i) {
+            // Print SSID and RSSI for each network found
+            Serial.printf("%2d",i + 1);
+            Serial.print(" | ");
+            Serial.printf("%-32.32s", WiFi.SSID(i).c_str());
+            Serial.print(" | ");
+            Serial.printf("%4d", WiFi.RSSI(i));
+            Serial.print(" | ");
+            Serial.printf("%2d", WiFi.channel(i));
+            Serial.print(" | ");
+            switch (WiFi.encryptionType(i))
+            {
+            case WIFI_AUTH_OPEN:
+                Serial.print("open");
+                break;
+            case WIFI_AUTH_WEP:
+                Serial.print("WEP");
+                break;
+            case WIFI_AUTH_WPA_PSK:
+                Serial.print("WPA");
+                break;
+            case WIFI_AUTH_WPA2_PSK:
+                Serial.print("WPA2");
+                break;
+            case WIFI_AUTH_WPA_WPA2_PSK:
+                Serial.print("WPA+WPA2");
+                break;
+            case WIFI_AUTH_WPA2_ENTERPRISE:
+                Serial.print("WPA2-EAP");
+                break;
+            case WIFI_AUTH_WPA3_PSK:
+                Serial.print("WPA3");
+                break;
+            case WIFI_AUTH_WPA2_WPA3_PSK:
+                Serial.print("WPA2+WPA3");
+                break;
+            case WIFI_AUTH_WAPI_PSK:
+                Serial.print("WAPI");
+                break;
+            default:
+                Serial.print("unknown");
+            }
+            Serial.println();
+            delay(10);
+        }
+    }
+    Serial.println("");
+
+    // Delete the scan result to free memory for code below.
+    WiFi.scanDelete();
+
+    // Wait a bit before scanning again.
+    delay(5000);
+}
+#+end_src
+这个例子通过WiFi对象很容易就实现了WiFi扫描的任务。这个代码主要有两个函
+数：setup和loop。setup函数是Arduino代码中进行初始化设置的地方。这里先
+配置了串口的传输速率，后面使用串口输出调试信息。然后设置WiFi的工作模式
+为Station模式，即将ESP32配置成一个WiFi普通接入设备。
+#+begin_src c
+    Serial.begin(115200); // 设置串口速率
+
+    // Set WiFi to station mode and disconnect from an AP if it was previously connected.
+    WiFi.mode(WIFI_STA); // 设置WiFi模块的工作模式
+    WiFi.disconnect();
+#+end_src
+loop函数是扫描有哪些接入点的地方，调用WiFi.scanNetworks函数即可获得有
+哪些接入点。如果返回值不是零，那么就将扫描到的接入点列表通过串口打印出
+来。下面是我运行的结果，就这么简单。
+#+begin_example
+Setup done
+Scan start
+Scan done
+24 networks found
+Nr | SSID                             | RSSI | CH | Encryption
+ 1 | MK32-1                           |  -29 |  1 | WPA+WPA2
+ 2 | tplink-5678                      |  -48 |  6 | WPA2
+ 3 | tplink-5678_Wi-Fi5               |  -49 |  6 | WPA2
+ 4 | HUAWEI-901                       |  -83 |  1 | WPA2
+ 5 | HUAWEI-1B9E9Z                    |  -83 |  1 | WPA2
+ 6 | APPLE PIE                        |  -84 |  6 | WPA2
+ 7 | sj                               |  -85 |  1 | WPA+WPA2
+ 8 | CU_wwxE                          |  -85 | 10 | WPA+WPA2
+ 9 | YING                             |  -86 |  1 | WPA+WPA2
+10 | ChinaNet-CA9s                    |  -87 |  8 | WPA+WPA2
+11 | ASUS_14_2G                       |  -88 |  1 | WPA2
+12 | Iris                             |  -89 |  4 | WPA+WPA2
+13 | ChinaNGB-701                     |  -89 | 13 | WPA+WPA2
+14 | ChinaNet-pJjd                    |  -90 |  8 | WPA+WPA2
+15 | China-Andy                       |  -90 |  8 | WPA+WPA2
+16 | CMCC-5sRd                        |  -90 |  9 | WPA+WPA2
+17 | HUAWEI-E6878-865A                |  -91 |  5 | WPA2
+18 | Xiaomi_1C95                      |  -91 |  6 | WPA+WPA2
+19 | HUAWEI-059                       |  -91 |  6 | WPA2
+20 | CMCC-4arW                        |  -91 |  6 | WPA+WPA2
+21 | TP-LINK_6349                     |  -91 | 11 | WPA+WPA2
+22 | ChinaNGB-701                     |  -92 | 13 | WPA+WPA2
+23 | ruijie_RG-EG150-2.4              |  -93 | 13 | WPA+WPA2
+24 | xulei                            |  -97 | 11 | WPA+WPA2
+#+end_example
+
+以上就是如何使用Arduino来编写ESP32程序的例子，是不是很简单？
+arduino-esp32项目还提供了很多其他示例，比如如何连接WiFi接入点，如果使
+用蓝牙等等。如果需要完成某个功能的代码，通过浏览示例目录可以很快找到示
+例代码。不过arduino-esp32采用的是LGPL的开源协议，直接使用代码示例需要
+承担开源义务。如果不想开源，记得不要直接使用例子。
+
+** 总结
 这是ESP32系列的第一篇，介绍了什么是ESP32以及如何使用Arduino环境
-对ESP32进行编程。后面我们还会继续这个主题，尝试一些其他实验，比如在ESP32上运行Python，
-使用ESP32模拟一个键盘等。
-
-
-- 什么是ESP32？
+对ESP32进行编程。如果你喜欢动手，想自己实现一个智能设备，不妨试试
+ESP32。后面我们还会继续ESP32这个主题，尝试更容易的编程方法，并
+挑战一些其他任务，比如使用ESP32模拟一个键盘，使用ESP32与手机通信等。
