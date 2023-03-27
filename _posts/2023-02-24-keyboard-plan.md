@@ -123,14 +123,28 @@ nav_order: {{ page.date }}
 
 
 <tr>
-<td class="org-left">2023/03/15 ~ 2023/03/31</td>
+<td class="org-left"><del>2023/03/15 ~ 2023/03/31</del></td>
 <td class="org-left">PCB设计、外壳设计</td>
 <td class="org-left">设计对用户友好的硬件布局，以及外壳</td>
 </tr>
 
 
 <tr>
-<td class="org-left">2023/04/01 ~ 2023/04/30</td>
+<td class="org-left">2023/03/16 ~ 2023/03/31</td>
+<td class="org-left">创建公众号</td>
+<td class="org-left">创建公众号，学习公众号文章发布和写作流程</td>
+</tr>
+
+
+<tr>
+<td class="org-left">2023/04/01 ~ 2023/04/15</td>
+<td class="org-left">PCB设计、外壳设计</td>
+<td class="org-left">设计对用户友好的硬件布局，以及外壳</td>
+</tr>
+
+
+<tr>
+<td class="org-left">2023/04/16 ~ 2023/04/30</td>
 <td class="org-left">外壳试制、PCB生产、贴片</td>
 <td class="org-left">PCB贴片</td>
 </tr>
