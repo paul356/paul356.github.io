@@ -105,7 +105,7 @@ esptool可以通过pip3（python3的扩展包管理工具）安装，在Python�
 
 ### 第三步 - 配置MicroPython环境
 
-其实这时我们已经可以开始使用MicroPython了，不过只能通过串口访问MicroPython环境。Mac和Linux可以通过screen通过串口连接ESP32。Windows环境上可以使用putty程序通过串口访问环境。不过需要调整串口设置，波特率设置成115200，Parity和FlowControl都设置成None，默认的串口参数连接MicroPython有问题。
+其实这时我们已经可以开始使用MicroPython了，不过只能通过串口访问MicroPython环境。Mac和Linux可以通过screen通过串口连接ESP32。Windows环境上可以使用putty程序通过串口访问环境。不过需要调整串口设置，波特率设置成115200，Parity和FlowControl都设置成None，默认的串口参数连接MicroPython有问题。这里使用screen作为示例：
 
     screen /dev/cu.usbserial-0001 115200
 

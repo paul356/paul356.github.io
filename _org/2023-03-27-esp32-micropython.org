@@ -91,7 +91,7 @@ A fatal error occurred: Failed to connect to ESP32: Wrong boot mode detected (0x
 #+end_example
 如果出现这种情形，需要手动帮助ESP32进入可编程模式。具体做法是：在出现 ~Connecting...~ 时，先按住"Boot"按钮，再轻按一下"EN"按钮，再释放"Boot"按钮。顺利的话，执行完两条命令后，我们就有一个运行了MicroPython的ESP32设备了。
 *** 第三步 - 配置MicroPython环境
-其实这时我们已经可以开始使用MicroPython了，不过只能通过串口访问MicroPython环境。Mac和Linux可以通过screen通过串口连接ESP32。Windows环境上可以使用putty程序通过串口访问环境。不过需要调整串口设置，波特率设置成115200，Parity和FlowControl都设置成None，默认的串口参数连接MicroPython有问题。
+其实这时我们已经可以开始使用MicroPython了，不过只能通过串口访问MicroPython环境。Mac和Linux可以通过screen通过串口连接ESP32。Windows环境上可以使用putty程序通过串口访问环境。不过需要调整串口设置，波特率设置成115200，Parity和FlowControl都设置成None，默认的串口参数连接MicroPython有问题。这里使用screen作为示例：
 #+begin_src shell
   screen /dev/cu.usbserial-0001 115200
 #+end_src
