@@ -12,10 +12,10 @@ nav_order: {{ page.date }}
 ## 硬件
 
 -   芯片
-    -   主控: esp-c2
+    -   主控: esp32s3
     -   供电
     -   充电: x
--   显示: OLED
+-   显示: OLED/LCD
 -   电池: x
 -   蜂鸣器
 -   pcb
@@ -40,8 +40,11 @@ nav_order: {{ page.date }}
 -   状态显示
     -   [X] 支持屏幕显示
     -   [X] 显示运行状态
+    -   [ ] **彩色屏幕**
     -   提示状态变化
-        -   [ ] 运行 -> 待机
+        -   [ ] **运行**
+        -   [ ] **连接状态**
+        -   [ ] **待机**
 -   连接管理
     -   USB连接相关
         -   [X] USB Device驱动
@@ -62,6 +65,8 @@ nav_order: {{ page.date }}
     -   [ ] 展示充电状态
 -   节能
     -   [ ] 支持USB Suspend
+        -   支持resume，k-state检测
+        -   支持唤醒host
     -   [ ] 支持自动进入IDLE节能
 
 
@@ -75,12 +80,17 @@ nav_order: {{ page.date }}
 -   统计功能
     -   [ ] 支持输入直方图
 -   键记录
--   智能纠错
+-   自动补全
+-   编程框架？
+-   游戏
+-   键盘密码
+-   打字特效
+-   存储功能
 
 
 # 开发计划
 
-计划时间安排:
+计划时间安排
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -161,7 +171,7 @@ nav_order: {{ page.date }}
 
 # 问题列表
 
-现有问题列表:
+现有问题列表
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 

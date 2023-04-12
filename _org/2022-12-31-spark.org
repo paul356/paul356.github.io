@@ -36,14 +36,25 @@ SparkCatalog支持如下操作：
 - 对Table改名
 - 删除一个Table
 SparkCatalog还依赖一些其他类实现其功能
-- HadoopCatalog
-- HadoopTableOperations
-- BaseTable BaseTable通过TableOperations依赖于HadoopTableOperations
-- SparkTable SparkTable是org.apache.spark.sql.connector.catalog.Table
-  的实现，是BaseTable的proxy。
+- *HadoopCatalog*
+- *HadoopTableOperations*
+- *BaseTable* BaseTable通过TableOperations依赖于HadoopTableOperations
+- *SparkTable* SparkTable是org.apache.spark.sql.connector.catalog.Table的实现，是BaseTable的代理对象。
 
 ** spark写流程
 - V2TableWriteExec in WriteToDataSourceV2Exec.scala
+  + writeWithV2(batchWrite: BatchWrite)
+- SparkWrite
+- BatchAppend indirectly implements BatchWrite
+  + createBatchWriteFactory returns WriterFactory
+  + commit
+- WriterFactory in SparkWrite.java
+  + createWriter returns UnpartitonedDataWriter or PartitionedDataWriter
+- UnpartitonedDataWriter
+- RollingDataWriter
+- PartitionedDataWriter
+- OutputFileFactory - Factory responsible for generating unique but recognizable data file names and file objects.
+- SparkFileWriteFactory - Return data file writer for Parquet, ORC or AVRO
 
 ** TODO 支持分层的数据湖格式（HTAP）
 - 基于lsm结构组织文件
@@ -67,3 +78,29 @@ SparkCatalog还依赖一些其他类实现其功能
     - [X] insert into
     - [ ] merge into
     - [ ] insert overwrite
+      
+* 特性
+** 特性列表
+- 自动数据partitioning
+  + 数据先写日志
+  + 动态partitioning管理
+- 面向数据湖的两层Index结构
+  + 共享的文件既Index
+  + 单文件的Index
+
+* 开发计划
+** 功能列表
+- 写流程修改
+  + [ ] 找到数据入口，写入日志 +和memtables+
+  + [ ] +Memtable flush和+ 日志回收
+  + [ ] 每个task生成一个loglet（日志的一段）
+  + [ ] 维护日志ID
+  + [ ] 设计衡量数据partition column的选择机制
+    * 数据分布是否均衡？
+    * 新老数据合并的开销？
+    * 小文件的数目？写与读的矛盾，通过控制小文件数目
+    * 查询开销：读取的无关数据的比重？
+  + [ ] 设计转换机制（修改partition，增加partition等）
+    * 乒乓转换：一个当前数据分布层，一个转换目标层
+    * 限制单个文件大小。写入一定量数据，同时完成同样量的转换，保证整个数据转换任务分散并可以完成
+    * 减少文件内容的转化，尽量按文件级别操作数据

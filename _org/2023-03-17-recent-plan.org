@@ -18,13 +18,12 @@ Objects:
 |  6 | Exercise + Lunch     | Body Build                | 2023 Full | M        |
 |  7 | Open Source Research | Read Paper                | 2023 Full | H        |
 
-
 * 每日计划
 Everyday schedule:
 | Periods\Weekday | Monday | Tuesday | Wendesday | Thursday | Friday | Staturday  | Sunday     |
 |-----------------+--------+---------+-----------+----------+--------+------------+------------|
-| 09:30 ~ 12:00   |      2 |       3 |         2 |        3 |      2 | Free Style | Free Style |
-| 12:00 ~ 14:00   |      3 |       6 |         3 |        6 |      3 |            |            |
+| 09:30 ~ 12:00   |      3 |       3 |         3 |        3 |      3 | Free Style | Free Style |
+| 12:00 ~ 14:00   |      2 |       6 |         2 |        6 |      2 |            |            |
 | 14:00 ~ 15:30   |      5 |       5 |         5 |        5 |      5 |            |            |
 | 17:00 ~ 18:00   |      7 |       7 |         7 |        7 |      7 |            |            |
 | 21:00 ~ 22:00   |      1 |       1 |         1 |        1 |      1 |            |            |
