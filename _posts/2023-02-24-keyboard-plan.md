@@ -60,6 +60,7 @@ nav_order: {{ page.date }}
     -   [X] 移植QMK键盘软件
 -   在线升级
     -   [X] HTTP OTA升级
+    -   [ ] OTA支持HTTPS
 -   充电
     -   [ ] 显示电量
     -   [ ] 展示充电状态
@@ -147,14 +148,21 @@ nav_order: {{ page.date }}
 
 
 <tr>
-<td class="org-left">2023/04/01 ~ 2023/04/15</td>
+<td class="org-left"><del>2023/04/01 ~ 2023/04/15</del></td>
 <td class="org-left">PCB设计、外壳设计</td>
 <td class="org-left">设计对用户友好的硬件布局，以及外壳</td>
 </tr>
 
 
 <tr>
-<td class="org-left">2023/04/16 ~ 2023/04/30</td>
+<td class="org-left">2023/04/24 ~ 2023/04/30</td>
+<td class="org-left">适配SPI显示驱动</td>
+<td class="org-left">适配SPI LCD驱动</td>
+</tr>
+
+
+<tr>
+<td class="org-left">2023/05/01 ~ 2023/05/15</td>
 <td class="org-left">外壳试制、PCB生产、贴片</td>
 <td class="org-left">PCB贴片</td>
 </tr>
@@ -225,9 +233,9 @@ nav_order: {{ page.date }}
 <td class="org-right">003</td>
 <td class="org-left">usb在电脑待机后没有响应</td>
 <td class="org-left">未知</td>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">2023/03/07</td>
-<td class="org-left">&#xa0;</td>
+<td class="org-left">esp-idf中增加对resume中断的处理</td>
+<td class="org-left">2023/04/24</td>
+<td class="org-left">已解决</td>
 </tr>
 </tbody>
 </table>
