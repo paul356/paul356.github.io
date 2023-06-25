@@ -13,13 +13,14 @@ nav_order: {{ page.date }}
 
 ** 如果在spark中使用iceberg
 #+BEGIN_SRC bash
-  spark-shell --packages org.apache.iceberg:iceberg-spark-runtime-3.3_2.12:1.1.0 \
+  spark-shell --packages org.apache.iceberg:iceberg-spark-runtime-3.3_2.12:1.2.1 \
               --conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions \
               --conf spark.sql.catalog.spark_catalog=org.apache.iceberg.spark.SparkSessionCatalog \
               --conf spark.sql.catalog.spark_catalog.type=hive \
               --conf spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog \
               --conf spark.sql.catalog.local.type=hadoop \
               --conf spark.sql.catalog.local.warehouse=$PWD \
+              --conf spark.sql.defaultCatalog=local \
               --conf spark.driver.extraJavaOptions=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=4747
 #+END_SRC
 
@@ -41,8 +42,8 @@ SparkCatalog还依赖一些其他类实现其功能
 - *BaseTable* BaseTable通过TableOperations依赖于HadoopTableOperations
 - *SparkTable* SparkTable是org.apache.spark.sql.connector.catalog.Table的实现，是BaseTable的代理对象。
 
-** ExecutionPlan
-- ExecutionPlan
+** QueryExecution
+- QueryExecution
   + assertCommandExecuted()
     * commandExecuted
       - analyzed.mapChildren(eagerlyExecuteCommands)
@@ -85,6 +86,8 @@ SparkCatalog还依赖一些其他类实现其功能
   + 二层索引
     - 第一层range索引
     - 第二层文件内索引
+  + 使用AVRO构建索引节点
+
 - 读数据
   + 逐层读取数据，再做数据合并
   + 多个partition并发查询，从第一层过滤自己感兴趣的数据
@@ -94,6 +97,7 @@ SparkCatalog还依赖一些其他类实现其功能
     - [X] insert into
     - [ ] merge into
     - [ ] insert overwrite
+  + 在内存中生成关键列的索引，生成索引文件或部分
       
 * 特性
 ** 特性列表
@@ -101,7 +105,7 @@ SparkCatalog还依赖一些其他类实现其功能
   + 数据先写日志
   + 动态partitioning管理
 - 面向数据湖的两层Index结构
-  + 共享的文件既Index
+  + 共享的文件级Index
   + 单文件的Index
 
 * 开发计划
