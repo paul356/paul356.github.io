@@ -58,7 +58,7 @@ Hard resetting via RTS pin...
 #+begin_src shell
   esptool.py --chip esp32 --port /dev/cu.usbserial-0001 --baud 460800 write_flash -z 0x1000 ~/Downloads/esp32-20230323-unstable-v1.19.1-992-g38e7b842c.bin
 #+end_src
-成功的输入
+成功的输出
 #+begin_example
 esptool.py v3.3.2
 Serial port /dev/cu.usbserial-0001
