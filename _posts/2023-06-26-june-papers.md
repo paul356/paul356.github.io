@@ -1,5 +1,3 @@
-'#+OPTIONS: ^:nil
-
 ---
 layout: default
 title: Paper Digest of June 2023
