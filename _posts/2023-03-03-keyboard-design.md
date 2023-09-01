@@ -1,0 +1,71 @@
+---
+layout: default
+title: Keyboard Design
+excerpt: Keyboard Design
+nav_order: {{ page.date }}
+---
+
+
+# Keyboard design
+
+
+## Overview
+
+This keyboard is based on the power of esp32 ecosystem and qmk
+architecture. By borrowing and learning from both communities to
+create a keyboard that can be used as a efficiency booster. So the
+hardware is based on esp32, which has many connection options and
+complete application layer software. The keyboard OS is FreeRTOS. It
+is a reliable real time OS. The keyboard can be connected to many
+devices through three methods.
+. USB (For power and keyboard functionality)
+. BLE (For keyboard functionality)
+. Wifi (For status review and keyboard configuration)
+The keyboard is powered by USB. In the future I will add battery
+support. Using USB power is a easy start.
+
+The keyboard layout should be user friendly. The key can be reached
+easily without paying too much attention. And it is more easily
+accepted by normal users.
+
+
+## Hardware Components
+
+The hardware includes PCB, stablizier, case, LED, buzzer. And off
+couse there are switches, keycaps. The keyboard supports hot-swap
+sockets. Users are allowed to change the switches and keycaps.
+
+
+## Software Functionalities
+
+
+### Basic Functionalities
+
+-   Power On and Off
+    
+    -   Show Running Status: Active, Idle, Current Power Source, etc.
+    
+    If the keyboard is powered by USB, you can power on the keyboard
+    by connecting keyboard to a USB port through a USB Type-A to Type-C
+    cable. You can power off the keyboard by disconnecting the cable. If
+    the keyboard is powered by batteries. The keyboard will enter idle
+    mode if it is idle for 5 seconds. You don't need to manually turn it
+    off to save power. But if you want to manually turn it off you can
+    take out the batteries from the battery case. When you put in
+    batteries the keyboard is powered on automatically.
+-   Manage Connections
+    -   Choose Whether to Send Keys through USB Connection
+        As required by the USB protocol we have to provide the device
+        information when you connect a HID device to computer or any hub we
+        have to identify the keyboard as a keyboard. So when you
+        connect this keyboard to computer the connection is
+        established. But since we have other connection options we can
+        choose whether to send key codes through this connection.
+    -   BLE Functionality
+        -   Turn On BLE
+        -   Turn Off BLE
+        -   Reset Bondings
+        -   Connection Management
+    -   Turn On Wifi and Web Server
+    -
+

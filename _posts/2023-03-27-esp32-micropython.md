@@ -69,7 +69,7 @@ esptool可以通过pip3（python3的扩展包管理工具）安装，在Python�
 
     esptool.py --chip esp32 --port /dev/cu.usbserial-0001 --baud 460800 write_flash -z 0x1000 ~/Downloads/esp32-20230323-unstable-v1.19.1-992-g38e7b842c.bin
 
-成功的输入
+成功的输出
 
     esptool.py v3.3.2
     Serial port /dev/cu.usbserial-0001
