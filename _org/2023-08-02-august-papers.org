@@ -31,7 +31,8 @@ This paper presents a HTAP system which can adapt to different worloads. OLTP wo
 ** GREP A Graph Learning Based Database Partitioning System
 Author: Xuanhe Zhou, Guoliang Li, Jianhua Feng, Luyang Liu, Wei Guo\\
 Publisher: SIGMOD 2023\\
-This paper presents a horizontal partitioning method that works for distributed databases. The author uses graph to represent table relations and characterize join relations. The main contributions of this paper include an attention based graph vertex weight learning method to speed up learning process, an embedding method for vertex features and an evaluation model for partitioning schema rating.
+Keywords: Graph Learning, Database Partitioning
+This paper presents a horizontal partitioning method that works for distributed databases. The author uses graph to represent table relations and characterize join relations. The main contributions of this paper are end to end graph base learning method to partition database tables horizontally for a given workload. This paper encodes the database and workload characteristics into a column graph. It uses this graph in the partitioning key selection process and evaulation mode model. The trianing process is semi supervised. The authors first collect real workload samples to train the pipeline, then use the top models to generate new samples for further training. This paper claims to be the first to use graph base learned method in database partitioning tasks.
 
 ** SageDB An Instance-Optimized Data Analytics System
 Author: Jialin Ding, Ryan Marcus, Andreas Kipf, Tim Kraska, etc.\\
