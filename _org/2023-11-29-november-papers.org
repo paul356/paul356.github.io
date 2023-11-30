@@ -1,0 +1,18 @@
+#+OPTIONS: ^:nil
+#+BEGIN_EXPORT html
+---
+layout: default
+title: Paper Digest of November 2023
+tags: [Database, AI4DB, Data Analytics]
+nav_order: {{ page.date }}
+---
+#+END_EXPORT
+
+|-----------------------------------------------------------------------------------------+-------------------------------------------------------------+-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------|
+| Title                                                                                   | Authors                                                     | Publisher   | Synthesis                                                                                                                                                                                     | Keywords                             |
+|-----------------------------------------------------------------------------------------+-------------------------------------------------------------+-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------|
+| A Reinforcement Learning Based R-Tree for Spatial Data Indexing in Dynamic Environments | Tu Gu, Sheng Wang, etc                                      | SIGMOD 2023 | This paper presents how to generate R-Tree cuts using reinforcement learning instead of arbitrary huristics. The value function is formulated against a base tree which is used as reference. The reinforcement method learns to choose actions maximizing the ratio against query costs on the base tree. The supported actions are chooseSubTree and cutSubTree. The R-Tree is constructed by inserting data points. | R-Tree, RL                           |
+| PAW: Data Partitioning Meets Workload Variance                                          | Zhe Li, Man Lung Yiu, Tsz Nam Chan                          | ICDE 2022   | This paper presents tries to optimize QD-Tree which performs good on seen workload but may perform badly on queries with variances. By introducing future queries during training PAW generates cuts which allows for some variances for future queries. | Partitioning, QD-Tree                |
+| Efficient Online Reinforcement Learning with Offline Data                               | Phillip J. Ball, Laura Smith, Ilya Kostrikov, Sergey Levine | arXiv 2023  | This paper presents a method to directly use offline data in online reinforcement learning, and show offline data can be used in reinforcement learning without offline training.             | Reinforcement Learning, Offline Data |
+|-----------------------------------------------------------------------------------------+-------------------------------------------------------------+-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------|
+
