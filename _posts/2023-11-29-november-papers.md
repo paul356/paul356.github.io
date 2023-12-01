@@ -64,15 +64,6 @@ nav_order: {{ page.date }}
 <td class="org-left">SIGMOD 1989</td>
 <td class="org-left">Graph Algoritm, Vertical Partitioning</td>
 </tr>
-
-
-<tr>
-<td class="org-left">Neural Packet Classification</td>
-<td class="org-left">Eric Liang, Ion Stoica</td>
-<td class="org-left">This paper proposes using RL to construct a decision tree for packet classifiers, and it shows how to model formulate the MDP for constructing the decision tree.</td>
-<td class="org-left">SIGCOMM 2019</td>
-<td class="org-left">Reinforcement Learning, Decision Tree</td>
-</tr>
 </tbody>
 </table>
 
