@@ -19,7 +19,7 @@ nav_order: {{ page.date }}
               --conf spark.sql.catalog.spark_catalog.type=hive \
               --conf spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog \
               --conf spark.sql.catalog.local.type=hadoop \
-              --conf spark.sql.catalog.local.warehouse=$PWD \
+              --conf spark.sql.catalog.local.warehouse=$PWD/warehouse \
               --conf spark.sql.defaultCatalog=local \
               --conf spark.driver.extraJavaOptions=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=4747
 #+END_SRC
