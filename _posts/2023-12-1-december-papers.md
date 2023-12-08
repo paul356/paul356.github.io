@@ -64,6 +64,15 @@ nav_order: {{ page.date }}
 <td class="org-left">SIGMOD 2014</td>
 <td class="org-left">Partitioning, NP-Hard</td>
 </tr>
+
+
+<tr>
+<td class="org-left">Small Materialized Aggregates: A Light Weight Index Structure for Data Warehousing</td>
+<td class="org-left">Guido Moerkotte</td>
+<td class="org-left">This paper shows how to speed up data warehouses with summaries called Small Materialized Aggregates. These SMAs are lightweight and easy to generate. They are similiar to views or data cubes but only compact information is generated for each data bucket.</td>
+<td class="org-left">VLDB 1998</td>
+<td class="org-left">SMA, Data Cube, Data Warehouse</td>
+</tr>
 </tbody>
 </table>
 
