@@ -1,13 +1,13 @@
 ---
 layout: default
-title: 创客利器之ESP32（二）
+title: 创客利器之ESP32（二） - 安装MicroPython环境
 tags: [esp32, MCU, micropython]
 nav_order: {{ page.date }}
 sync_wexin: 1
 ---
 
 
-# 创客利器之ESP32（二）
+# 创客利器之ESP32（二） - 安装MicroPython环境
 
 
 ## 前言

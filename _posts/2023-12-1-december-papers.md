@@ -94,11 +94,29 @@ nav_order: {{ page.date }}
 
 
 <tr>
-<td class="org-left">Data Cube: A Relational Aggregation Operator - Generalizing Group-By, Cross-Tab, and Sub-Totals</td>
+<td class="org-left"><b>Data Cube: A Relational Aggregation Operator - Generalizing Group-By, Cross-Tab, and Sub-Totals</b></td>
 <td class="org-left">Jim Gray, Adam Bosworth, Andrew Layman, Hamid Pirahesh</td>
 <td class="org-left">This visionary paper explains to us what are data cubes and why we need them in analytics. It also shows us how to generate data cubes with the SQL group-by, proposes what enhancements we need make to group-bys. And it categorifies the aggregate functions. It shows how to compute data cubes with distributive and algebraic aggregates.</td>
 <td class="org-left">Data Mining and Knowledge Discovery 19997</td>
 <td class="org-left">Data Cube, Group-By, Cross-Tab, Roll-Up, Drill-Down</td>
+</tr>
+
+
+<tr>
+<td class="org-left">Self-Organizing Data Containers</td>
+<td class="org-left">Samuel Madden, Jialin Ding, Tim Kraska, .etc</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">CIDR 2022</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+
+<tr>
+<td class="org-left">Instance-Optimized Data Layouts for Cloud Analytics Workloads</td>
+<td class="org-left">Jialin Ding, Umar Farooq Minhas, Tim Kraska, .etc</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
 </tr>
 </tbody>
 </table>

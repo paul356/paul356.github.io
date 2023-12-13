@@ -2,14 +2,14 @@
 #+BEGIN_EXPORT html
 ---
 layout: default
-title: 创客利器之ESP32（二）
+title: 创客利器之ESP32（二） - 安装MicroPython环境
 tags: [esp32, MCU, micropython]
 nav_order: {{ page.date }}
 sync_wexin: 1
 ---
 #+END_EXPORT
 
-* 创客利器之ESP32（二）
+* 创客利器之ESP32（二） - 安装MicroPython环境
 ** 前言
 上一篇小文“创客利器之ESP32（一）”介绍了什么是ESP32，以及如何通过Arduino来对ESP32进行编程。今天我们再了解一个更简单快捷对ESP32编程的方法：MicroPython。先看一下MicroPython的界面。
 [[/images/micropython_webrepl.jpg]]
