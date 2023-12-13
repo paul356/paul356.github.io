@@ -73,6 +73,33 @@ nav_order: {{ page.date }}
 <td class="org-left">VLDB 1998</td>
 <td class="org-left">SMA, Data Cube, Data Warehouse</td>
 </tr>
+
+
+<tr>
+<td class="org-left">Different Cube Computation Approaches: Survey Paper</td>
+<td class="org-left">Dhanshri S. Lad, Rasika P. Saste</td>
+<td class="org-left">This paper survey the different algorithms to compute data cubes. The authors also propose use MR to speed up the data cube computation.</td>
+<td class="org-left">IJCSIT 2014</td>
+<td class="org-left">Data Cube, Mapreduce</td>
+</tr>
+
+
+<tr>
+<td class="org-left">High-Diemnsional OLAP: A Minimal Cubing Approach</td>
+<td class="org-left">Xiaolei Li, Jiawei Han, Hector Gonzalez</td>
+<td class="org-left">This paper proposes to decompose the data cube computation by precomputing small sized groups called fragements and a value-list inverted index. All dimensions are divided into 3/4 dimension groups called fragments. For each fragments all data cubes are computed as lists of tuple ids using the inverted index. This paper also shows how to serve point queries and subcube queries with these fragments.</td>
+<td class="org-left">VLDB 2004</td>
+<td class="org-left">Data Cube, Shell Fragment, OLAP</td>
+</tr>
+
+
+<tr>
+<td class="org-left">Data Cube: A Relational Aggregation Operator - Generalizing Group-By, Cross-Tab, and Sub-Totals</td>
+<td class="org-left">Jim Gray, Adam Bosworth, Andrew Layman, Hamid Pirahesh</td>
+<td class="org-left">This visionary paper explains to us what are data cubes and why we need them in analytics. It also shows us how to generate data cubes with the SQL group-by, proposes what enhancements we need make to group-bys. And it categorifies the aggregate functions. It shows how to compute data cubes with distributive and algebraic aggregates.</td>
+<td class="org-left">Data Mining and Knowledge Discovery 19997</td>
+<td class="org-left">Data Cube, Group-By, Cross-Tab, Roll-Up, Drill-Down</td>
+</tr>
 </tbody>
 </table>
 
