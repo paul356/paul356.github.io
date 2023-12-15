@@ -11,3 +11,5 @@ vendor/
 .DS_Store
 *~
 *#
+cache.bin
+_wexin

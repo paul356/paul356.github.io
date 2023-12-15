@@ -105,18 +105,27 @@ nav_order: {{ page.date }}
 <tr>
 <td class="org-left">Self-Organizing Data Containers</td>
 <td class="org-left">Samuel Madden, Jialin Ding, Tim Kraska, .etc</td>
-<td class="org-left">&#xa0;</td>
+<td class="org-left">The authors envision a kind of systems called Self-Organizing Data Containers which employ a disaggregated and open system architechture. They name a few characteristics of these system - supporting efficient indexing, supporting concurrent acesses, supporting data envolving. They implement a prototype and compare with Delta Lake. The authors also point the directions - using replications to optimize the physical layout, incremental changes and auto-optimizations - for future research.</td>
 <td class="org-left">CIDR 2022</td>
-<td class="org-left">&#xa0;</td>
+<td class="org-left">Self-Organizing Data Container, Cloud Storage, Amazon S3</td>
 </tr>
 
 
 <tr>
 <td class="org-left">Instance-Optimized Data Layouts for Cloud Analytics Workloads</td>
 <td class="org-left">Jialin Ding, Umar Farooq Minhas, Tim Kraska, .etc</td>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">&#xa0;</td>
+<td class="org-left">This paper proposes a method called MTO which optimizes QD-Tree through Sideways Information Passing. It add Join-induced Predicates into QD-Tree. Effectively it should perform better than single table optimization. But Join-induced Predicates also poses a challenge when new data are added or old data are updated. Join-induced Predicates need to be refreshed and adjusted.</td>
+<td class="org-left">SIGMOD 2021</td>
+<td class="org-left">QD-Tree, Sideways Information Passing, Instance-Optimized Data Layout</td>
+</tr>
+
+
+<tr>
+<td class="org-left">Tsunami: A Learned Multi-dimensional - Index for Correlated Data and Skewed Workloads</td>
+<td class="org-left">Jialin Ding, Umar Farooq Minhas, Tim Kraska, .etc</td>
+<td class="org-left">This paper proposes a learned multi-dimensional index called Tsunami which is an improved successor to Flood, another learned multi-dimentional index. The authors observe that there are query skew and data correlation which pose challenges to both tranditional multi-dimentional indices and Flood. This paper invents two structures - Grid Tree and Argumented Grid. Each structure is constructured as an optimization problem. The authors also formulate the optimization goals.</td>
+<td class="org-left">PVLDB Vol 14, No. 2, 2020</td>
+<td class="org-left">Learned Index, Multi-dimensional Index, Skewed Workload</td>
 </tr>
 </tbody>
 </table>
