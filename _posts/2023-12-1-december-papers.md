@@ -150,7 +150,7 @@ nav_order: {{ page.date }}
 <tr>
 <td class="org-left">Stochastic Database Cracking: Towards Robust Adaptive - Indexing in Main-Memory Column-Stores</td>
 <td class="org-left">Felix Halim, Stratos Idreos, Panagiotis Karras, Roland H. C. Yap</td>
-<td class="org-left">This paper extends the origional idea of database cracking by introducing stochastic cracks. The origional database cracking only cracks a column exactly based on data predicates. This paper shows that for sequential workload the origional cracking method has no optimization compared to random workload. In order to address this problem this paper propose two different algorithms - DDC and DDR. The difference is that DDC also tries to cut in the center which requires a cost of finding the median, but DDR choose to cut randomly. They also devise other variants with more lightweight initial cost based on these two algorithms.</td>
+<td class="org-left">This paper extends the origional idea of database cracking by introducing stochastic cracks. The origional database cracking only cracks a column exactly based on data predicates. This paper shows that for sequential workload the origional cracking method has no optimization compared to random workload. In order to address this problem this paper propose two different algorithms - DDC and DDR. The difference is that DDC always tries to cut in the center which requires a cost of finding the median, but DDR chooses to cut randomly. They also devise other variants with more lightweight initial cost based on these two algorithms.</td>
 <td class="org-left">PVLDB 2012</td>
 <td class="org-left">Database Cracking, Column Store, Adaptive Indexing</td>
 </tr>
