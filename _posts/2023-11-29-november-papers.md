@@ -64,15 +64,6 @@ nav_order: {{ page.date }}
 <td class="org-left">SIGMOD 1989</td>
 <td class="org-left">Graph Algoritm, Vertical Partitioning</td>
 </tr>
-
-
-<tr>
-<td class="org-left">SA-LSM: Optimize Data Layout for LSM-tree Based Storage using Survival Analysis</td>
-<td class="org-left">Teng Zhang, Jianling Sun, .etc</td>
-<td class="org-left">This paper presents SA-SLM which uses survival analysis to predict data access events per record. This ssystem employs a proactively compaction srategy to move cold data to slow media. The authors claim that they can reduce tail latency by up to 78.9% using SA-SLM.</td>
-<td class="org-left">PVLDB Vol 15 Issue 10, 2022</td>
-<td class="org-left">LSM-Tree, Survival Analysis, Random Forest</td>
-</tr>
 </tbody>
 </table>
 

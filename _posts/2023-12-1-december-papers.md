@@ -127,6 +127,42 @@ nav_order: {{ page.date }}
 <td class="org-left">PVLDB Vol 14, No. 2, 2020</td>
 <td class="org-left">Learned Index, Multi-dimensional Index, Skewed Workload</td>
 </tr>
+
+
+<tr>
+<td class="org-left">SA-LSM: Optimize Data Layout for LSM-tree Based Storage using Survival Analysis</td>
+<td class="org-left">Teng Zhang, Jianling Sun, .etc</td>
+<td class="org-left">This paper presents SA-SLM which uses survival analysis to predict data access events per record. This ssystem employs a proactively compaction srategy to move cold data to slow media. The authors claim that they can reduce tail latency by up to 78.9% using SA-SLM.</td>
+<td class="org-left">PVLDB Vol 15 Issue 10, 2022</td>
+<td class="org-left">LSM-Tree, Survival Analysis, Random Forest</td>
+</tr>
+
+
+<tr>
+<td class="org-left">Tiresias: Enabling Predictive Autonomous Storage and Indexing</td>
+<td class="org-left">Michael Abebe, Horatiu Lazu, Khuzaima Daudjee</td>
+<td class="org-left">This paper presents the Tiresias method which combine workload prediction and autonomous storage and indexing. The authors introduce how to predict future workoad and estimate plan cost under a specific storage layout. They also give a heuristic method to calculate the benefit of employing a storage change. Though this paper doesn't say how to propose a storage change I guess they should have a small fixed set of storage choices to select from.</td>
+<td class="org-left">SIGMOD 2021</td>
+<td class="org-left">Autonomous Storage, Indexing, Workload Prediction</td>
+</tr>
+
+
+<tr>
+<td class="org-left">Stochastic Database Cracking: Towards Robust Adaptive - Indexing in Main-Memory Column-Stores</td>
+<td class="org-left">Felix Halim, Stratos Idreos, Panagiotis Karras, Roland H. C. Yap</td>
+<td class="org-left">This paper extends the origional idea of database cracking by introducing stochastic cracks. The origional database cracking only cracks a column exactly based on data predicates. This paper shows that for sequential workload the origional cracking method has no optimization compared to random workload. In order to address this problem this paper propose two different algorithms - DDC and DDR. The difference is that DDC also tries to cut in the center which requires a cost of finding the median, but DDR choose to cut randomly. They also devise other variants with more lightweight initial cost based on these two algorithms.</td>
+<td class="org-left">PVLDB 2012</td>
+<td class="org-left">Database Cracking, Column Store, Adaptive Indexing</td>
+</tr>
+
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
 </tbody>
 </table>
 
