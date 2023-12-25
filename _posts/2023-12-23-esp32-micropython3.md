@@ -17,7 +17,7 @@ sync_wexin: 1
 
 ## MQTT协议
 
-MQTT协议是一个物联网环境里常用的消息协议。MQTT系统往往由Broker和Client组成，Broker类似服务器，并维护很多地址和地址的内容；Client通过MQTT协议可以创建，改变地址的内容和读取地址的内容，Client还可以监听地址内容的变化。这里的地址格式类似Unix文件系统中的路径，可以有多级路径，比如 `/home/bedroom/light` 、 `/home/bedroom/air-conditioner` 等。支持通过设计一定的结构来方便地址的管理，并且支持对相同前置层级的地址进行批量操作。
+MQTT协议是一个物联网环境里常用的消息协议。MQTT系统往往由Broker和Client组成，Broker类似服务器，并维护很多地址和地址的内容；Client通过MQTT协议可以创建，改变地址的内容和读取地址的内容，Client还可以监听地址内容的变化。这里的地址格式类似Unix文件系统中的路径，可以有多级路径，比如 `home/bedroom/light` 、 `home/bedroom/air-conditioner` 等。支持通过设计一定的结构来方便地址的管理，并且支持对相同前置层级的地址进行批量操作。
 
 
 ## Mosquitto - MQTT Broker
@@ -98,7 +98,7 @@ Eclipse Mosquitto是一个MQTT Broker的开源实现，被很多物联网项目�
 
     user1@blackbox:~$ mosquitto_pub -h 192.168.3.102 -p 9001 -t home/bedroom/light -r -m on
 
-如果正常这时小灯应该就亮了，用下面的命令关闭小灯，是不是很容易？当然过程可能不那么顺利，如果有异常用screen查看串口的输出，可能main.py的语法有点问题，修改好再试试。
+如果正常这时小灯应该已经亮了，用下面的命令关闭小灯，是不是很容易？当然过程可能不那么顺利，如果有异常用screen查看串口的输出，可能main.py的语法有点问题，修改好再试试。
 
     user1@blackbox:~$ mosquitto_pub -h 192.168.3.102 -p 9001 -t home/bedroom/light -r -m off
 

@@ -12,7 +12,7 @@ sync_wexin: 1
 ** 前言
 前面两篇文章介绍了如何通过MicroPython固件控制ESP32，以及如何自动连接家里的局域网。有了这些基础我们可以将ESP32接入智能家庭系统HomeAssistant，可以通过HomeAssistant实现智能化控制电器等功能。不过目前没有现成的组件能够让MicroPython与HomeAssistant相连接，我们需要通过MQTT作为中间协议，HomeAssistant和MicroPython都作为Client与MQTT Broker通信。这一篇我们展示如何通过MQTT协议来与ESP32通信。
 ** MQTT协议
-MQTT协议是一个物联网环境里常用的消息协议。MQTT系统往往由Broker和Client组成，Broker类似服务器，并维护很多地址和地址的内容；Client通过MQTT协议可以创建，改变地址的内容和读取地址的内容，Client还可以监听地址内容的变化。这里的地址格式类似Unix文件系统中的路径，可以有多级路径，比如 ~/home/bedroom/light~ 、 ~/home/bedroom/air-conditioner~ 等。支持通过设计一定的结构来方便地址的管理，并且支持对相同前置层级的地址进行批量操作。
+MQTT协议是一个物联网环境里常用的消息协议。MQTT系统往往由Broker和Client组成，Broker类似服务器，并维护很多地址和地址的内容；Client通过MQTT协议可以创建，改变地址的内容和读取地址的内容，Client还可以监听地址内容的变化。这里的地址格式类似Unix文件系统中的路径，可以有多级路径，比如 ~home/bedroom/light~ 、 ~home/bedroom/air-conditioner~ 等。支持通过设计一定的结构来方便地址的管理，并且支持对相同前置层级的地址进行批量操作。
 ** Mosquitto - MQTT Broker
 Eclipse Mosquitto是一个MQTT Broker的开源实现，被很多物联网项目使用。可以在[[https://mosquitto.org/download/][Download]]地址下载和安装。这里我们介绍通过docker来安装一个Mosquitto服务，docker安装可以参考这个[[https://docs.docker.com/engine/install/][地址]]。安装好docker之后，先在~目录下创建一个mosquitto目录，并创建如下配置文件，用于指定服务端口和允许匿名访问，待会用于启动Mosquitto。
 #+begin_example
@@ -87,7 +87,7 @@ mosquitto_pub -h <mqtt_broker_ip> -p 9001 -t home/bedroom/light -m on
 #+begin_example
 user1@blackbox:~$ mosquitto_pub -h 192.168.3.102 -p 9001 -t home/bedroom/light -r -m on
 #+end_example
-如果正常这时小灯应该就亮了，用下面的命令关闭小灯，是不是很容易？当然过程可能不那么顺利，如果有异常用screen查看串口的输出，可能main.py的语法有点问题，修改好再试试。
+如果正常这时小灯应该已经亮了，用下面的命令关闭小灯，是不是很容易？当然过程可能不那么顺利，如果有异常用screen查看串口的输出，可能main.py的语法有点问题，修改好再试试。
 #+begin_example
 user1@blackbox:~$ mosquitto_pub -h 192.168.3.102 -p 9001 -t home/bedroom/light -r -m off
 #+end_example
