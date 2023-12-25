@@ -1,0 +1,109 @@
+---
+layout: default
+title: 创客利器之ESP32（四）- 使用ESP32和MQTT控制小灯
+tags: [esp32, MCU, micropython, MQTT]
+nav_order: {{ page.date }}
+sync_wexin: 1
+---
+
+
+# 创客利器之ESP32（四）- 使用MicroPython与MQTT一起控制小灯
+
+
+## 前言
+
+前面两篇文章介绍了如何通过MicroPython固件控制ESP32，以及如何自动连接家里的局域网。有了这些基础我们可以将ESP32接入智能家庭系统HomeAssistant，可以通过HomeAssistant实现智能化控制电器等功能。不过目前没有现成的组件能够让MicroPython与HomeAssistant相连接，我们需要通过MQTT作为中间协议，HomeAssistant和MicroPython都作为Client与MQTT Broker通信。这一篇我们展示如何通过MQTT协议来与ESP32通信。
+
+
+## MQTT协议
+
+MQTT协议是一个物联网环境里常用的消息协议。MQTT系统往往由Broker和Client组成，Broker类似服务器，并维护很多地址和地址的内容；Client通过MQTT协议可以创建，改变地址的内容和读取地址的内容，Client还可以监听地址内容的变化。这里的地址格式类似Unix文件系统中的路径，可以有多级路径，比如 `/home/bedroom/light` 、 `/home/bedroom/air-conditioner` 等。支持通过设计一定的结构来方便地址的管理，并且支持对相同前置层级的地址进行批量操作。
+
+
+## Mosquitto - MQTT Broker
+
+Eclipse Mosquitto是一个MQTT Broker的开源实现，被很多物联网项目使用。可以在[Download](https://mosquitto.org/download/)地址下载和安装。这里我们介绍通过docker来安装一个Mosquitto服务，docker安装可以参考这个[地址](https://docs.docker.com/engine/install/)。安装好docker之后，先在~目录下创建一个mosquitto目录，并创建如下配置文件，用于指定服务端口和允许匿名访问，待会用于启动Mosquitto。
+
+    user1@blackbox:~$ cat <<EOF > ~/mosquitto/mosquitto.conf
+    listener 9001
+    allow_anonymous true
+    EOF
+
+执行下面的命令，来创建一个Mosquitto容器。再通过 `docker ps` 命令可以查看容器STATUS是否正常。
+
+    docker run -d -p 9001:9001 -v ~/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf -v ~/mosquitto/data:/mosquitto/data -v ~/mosquitto/log:/mosquitto/log eclipse-mosquitto
+    user1@blackbox:~$ docker ps -a
+    CONTAINER ID   IMAGE               COMMAND                   CREATED          STATUS          PORTS                                                 NAMES
+    47cf8835787e   eclipse-mosquitto   "/docker-entrypoint.…"   46 seconds ago   Up 46 seconds   1883/tcp, 0.0.0.0:9001->9001/tcp, :::9001->9001/tcp   quirky_easley
+
+有了Broker后，我们就可以使用mosquitto\_pub和mosquitto\_sub测试一下MQTT发布和订阅。如果没有mosquitto\_pub/mosquitto\_sub，debian/ubuntu用户可以通过 `apt uinstall mosquitto-clients` 安装，其他操作系统请使用对应的包管理工具安装。我们先使用mosquitto\_sub订阅地址 `home/bedroom/light` 。
+
+    mosquitto_sub -h <mqtt_broker_ip> -p 9001 -t home/bedroom/light
+
+再打开一个命令行窗口，用下面的命令向 `home/bedroom/light` 发布值 `on` 。再返回mosquitto\_sub对应的窗口，如果一切正常，应该看到我们在另一个窗口发布的值 `on` 。
+
+    mosquitto_pub -h <mqtt_broker_ip> -p 9001 -t home/bedroom/light -m on
+
+准备好了MQTT Broker之后，下面我们使用MicroPython订阅某一个地址，通过控制这个地址关联的值就可以通知ESP32完成预设的任务。
+
+
+## MicroPython做为MQTT Client
+
+为ESP32准备好MicroPython固件，并设置好网络连接，以访问我们准备好的MQTT Broker。具体步骤可以参考上一篇博文“创客利器之ESP32（三）- 使用MicroPython自动连接WiFi”。MicroPython在执行完boot.py文件之后，还会检查并执行main.py文件，我们将在main.py中实现我们的代码。我们使用地址 `home/bedroom/light` , 如果关联的值是 `on` 就打开GPIO5端口连接的小灯；如果是其他的值就关闭小灯。代码如下，需要将全局变量server、port\_num、switch\_topic根据实际情况进行调整。
+
+    import time
+    from umqtt.simple import MQTTClient
+    from machine import Pin
+    
+        # Publish test messages e.g. with:
+        # mosquitto_pub -t foo_topic -m hello
+    
+        server = "<mqtt_broker_ip>"
+        port_num = 9001
+        swith_topic = b"home/bedroom/light"
+        p5 = Pin(5, Pin.OUT)
+        p5.off()
+    
+        # 如果值是on，打开小灯；否则关掉小灯
+        def sub_cb(topic, msg):
+            if msg.decode().lower() == "on":
+                p5.on()
+            else:
+                p5.off()
+    
+    def main():
+        print("main started ...")
+        c = MQTTClient("umqtt_client", server, port=port_num)
+        c.set_callback(sub_cb)
+        c.connect()
+        c.subscribe(swith_topic)
+        while True:
+            try:
+                if True:
+                    # Blocking wait for message
+                    c.wait_msg()
+            except Exception:
+                print("wait message fail")
+        c.disconnect()
+    
+    print("will enter main")
+    if __name__ == "__main__":
+        main()
+
+编辑好main.py, 打开浏览器，输入<http://><esp32\_ip>:8266，使用webrepl上传main.py。连接好小灯，如下图这样。
+
+![img](/images/esp32-with-led.jpg)
+
+下面使用mosquitto\_pub向地址发送值 `on` 和 `off` ，开是否可以打开和关闭小灯。
+
+    user1@blackbox:~$ mosquitto_pub -h 192.168.3.102 -p 9001 -t home/bedroom/light -r -m on
+
+如果正常这时小灯应该就亮了，用下面的命令关闭小灯，是不是很容易？当然过程可能不那么顺利，如果有异常用screen查看串口的输出，可能main.py的语法有点问题，修改好再试试。
+
+    user1@blackbox:~$ mosquitto_pub -h 192.168.3.102 -p 9001 -t home/bedroom/light -r -m off
+
+
+## 总结
+
+今天我们介绍了怎么使用MQTT协议控制ESP32，我们已经可以用MicroPython完成一些比较复杂的任务，下一篇文章我们将HomeAssistant、Mosquitto和ESP32串起来实现自动化打开和关闭小灯。
+

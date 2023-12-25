@@ -1,7 +1,7 @@
 ---
 layout: default
 title: 创客利器之ESP32（三）- 使用MicroPython自动连接WiFi
-tags: [esp32, MCU, micropython, Home Assistant, MQTT]
+tags: [esp32, MCU, micropython]
 nav_order: {{ page.date }}
 sync_wexin: 1
 ---
