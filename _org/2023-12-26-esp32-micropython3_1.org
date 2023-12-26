@@ -53,7 +53,7 @@ sync_wexin: 1
       main()
 #+end_src
 但是我发现只要我打开第二个ESP32时，第一个打开的ESP32就会报错，一直打印 ~wait message fail~ 。开始我怀疑是因为MQTT Broker不支持多个客户端订阅同一个地址，但是查了文档发现并没有这样的问题，而且使用mosquitto_sub工具就没有这样的问题。在没有找到原因的情况下，就像很多程序员一样，先修改代码绕过问题。修改后的代码如下。结果两个ESP32每隔一秒钟就报一次错，然后重新连接，不完美还是可以打开关闭小灯。
-#+begin_src python
+#+BEGIN_SRC python
   def main():
       print("main started ...")
       connect = True
@@ -78,7 +78,7 @@ sync_wexin: 1
       c.disconnect()
 #+end_src
 由于这个方案并不完美，我还是决定上网找一下是否有人遇到和我一样的问题。还真找到了，有个人遇到了和我一样[[https://stackoverflow.com/questions/36184490/mqtt-client-disconnects-when-another-client-connects-to-the-server][问题]]。原来Mosquitto为每个client_id只保留一个连接，而我的main.py使用了相同的client_id。所以第二个ESP32连接时，第一个ESP32会被断开。再修改main函数如下，给client_id加上一个随机数，这样不同ESP32的client_id大概率就不一样了。
-#+begin_src python
+#+BEGIN_SRC python
 def main():
     print("main started ...")
     connect = True
@@ -101,7 +101,7 @@ def main():
              time.sleep(1)
              connect = True
     c.disconnect()
-#+end_src
+#+END_SRC
 
 ** 总结
 看来看清楚API文档很重要。

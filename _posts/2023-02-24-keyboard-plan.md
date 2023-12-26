@@ -93,157 +93,26 @@ nav_order: {{ page.date }}
 
 计划时间安排
 
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">时间阶段</th>
-<th scope="col" class="org-left">内容</th>
-<th scope="col" class="org-left">备注</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td class="org-left">2023/02/25 ~ 2023/02/28</td>
-<td class="org-left">蓝牙驱动、连接管理</td>
-<td class="org-left">解决蓝牙连接问题，支持开关蓝牙、usb连接等</td>
-</tr>
-
-
-<tr>
-<td class="org-left">2023/03/01 ~ 2023/03/07</td>
-<td class="org-left">布局展示、键码定制</td>
-<td class="org-left">支持键布局定制</td>
-</tr>
-
-
-<tr>
-<td class="org-left">2023/03/08 ~ 2023/03/15</td>
-<td class="org-left">显示驱动、蜂鸣器</td>
-<td class="org-left">尝试增加外设</td>
-</tr>
-
-
-<tr>
-<td class="org-left"><del>2023/03/15 ~ 2023/03/31</del></td>
-<td class="org-left">PCB设计、外壳设计</td>
-<td class="org-left">设计对用户友好的硬件布局，以及外壳</td>
-</tr>
-
-
-<tr>
-<td class="org-left">2023/03/16 ~ 2023/03/31</td>
-<td class="org-left">创建公众号</td>
-<td class="org-left">创建公众号，学习公众号文章发布和写作流程</td>
-</tr>
-
-
-<tr>
-<td class="org-left"><del>2023/04/01 ~ 2023/04/15</del></td>
-<td class="org-left">PCB设计、外壳设计</td>
-<td class="org-left">设计对用户友好的硬件布局，以及外壳</td>
-</tr>
-
-
-<tr>
-<td class="org-left">2023/04/24 ~ 2023/04/30</td>
-<td class="org-left">适配SPI显示驱动</td>
-<td class="org-left">适配SPI LCD驱动</td>
-</tr>
-
-
-<tr>
-<td class="org-left">2023/05/01 ~ 2023/05/15</td>
-<td class="org-left">PCB设计、外壳设计</td>
-<td class="org-left">设计对用户友好的硬件布局，以及外壳</td>
-</tr>
-
-
-<tr>
-<td class="org-left">2023/05/15 ~ 2023/05/31</td>
-<td class="org-left">外壳试制、PCB生产、贴片</td>
-<td class="org-left">PCB贴片</td>
-</tr>
-
-
-<tr>
-<td class="org-left">2023/06/01 ~ 2023/06/15</td>
-<td class="org-left">美化界面</td>
-<td class="org-left">使用numl.design美化界面</td>
-</tr>
-</tbody>
-</table>
+| 时间阶段                    | 内容          | 备注                   |
+|--------------------------- |------------- |---------------------- |
+| 2023/02/25 ~ 2023/02/28     | 蓝牙驱动、连接管理 | 解决蓝牙连接问题，支持开关蓝牙、usb连接等 |
+| 2023/03/01 ~ 2023/03/07     | 布局展示、键码定制 | 支持键布局定制         |
+| 2023/03/08 ~ 2023/03/15     | 显示驱动、蜂鸣器 | 尝试增加外设           |
+| ~~2023/03/15 ~ 2023/03/31~~ | PCB设计、外壳设计 | 设计对用户友好的硬件布局，以及外壳 |
+| 2023/03/16 ~ 2023/03/31     | 创建公众号    | 创建公众号，学习公众号文章发布和写作流程 |
+| ~~2023/04/01 ~ 2023/04/15~~ | PCB设计、外壳设计 | 设计对用户友好的硬件布局，以及外壳 |
+| 2023/04/24 ~ 2023/04/30     | 适配SPI显示驱动 | 适配SPI LCD驱动        |
+| 2023/05/01 ~ 2023/05/15     | PCB设计、外壳设计 | 设计对用户友好的硬件布局，以及外壳 |
+| 2023/05/15 ~ 2023/05/31     | 外壳试制、PCB生产、贴片 | PCB贴片                |
+| 2023/06/01 ~ 2023/06/15     | 美化界面      | 使用numl.design美化界面 |
 
 
 # 问题列表
 
 现有问题列表
 
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-right" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-right">问题ID</th>
-<th scope="col" class="org-left">描述</th>
-<th scope="col" class="org-left">问题原因</th>
-<th scope="col" class="org-left">解决方法</th>
-<th scope="col" class="org-left">计划解决时间</th>
-<th scope="col" class="org-left">当前状态</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td class="org-right">001</td>
-<td class="org-left">蓝牙无法连接</td>
-<td class="org-left">battery_set导致挂死，无法通过indication发送按键</td>
-<td class="org-left">去掉battery_set操作</td>
-<td class="org-left">2023/02/28</td>
-<td class="org-left">已解决</td>
-</tr>
-
-
-<tr>
-<td class="org-right">002</td>
-<td class="org-left">蓝压断开后无法恢复连接</td>
-<td class="org-left">未知</td>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">2023/03/07</td>
-<td class="org-left">&#xa0;</td>
-</tr>
-
-
-<tr>
-<td class="org-right">003</td>
-<td class="org-left">usb在电脑待机后没有响应</td>
-<td class="org-left">esp-idf未处理esp32sx USB resume中断</td>
-<td class="org-left">esp-idf中增加对resume中断的处理</td>
-<td class="org-left">2023/04/24</td>
-<td class="org-left">已解决</td>
-</tr>
-</tbody>
-</table>
-
+| 问题ID | 描述          | 问题原因                            | 解决方法               | 计划解决时间 | 当前状态 |
+|---- |------------- |----------------------------------- |---------------------- |---------- |---- |
+| 001  | 蓝牙无法连接  | battery\_set导致挂死，无法通过indication发送按键 | 去掉battery\_set操作   | 2023/02/28 | 已解决 |
+| 002  | 蓝压断开后无法恢复连接 | 未知                                |                        | 2023/03/07 |      |
+| 003  | usb在电脑待机后没有响应 | esp-idf未处理esp32sx USB resume中断 | esp-idf中增加对resume中断的处理 | 2023/04/24 | 已解决 |
