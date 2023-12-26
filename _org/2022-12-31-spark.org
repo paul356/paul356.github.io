@@ -76,6 +76,21 @@ SparkCatalog还依赖一些其他类实现其功能
 - OutputFileFactory - Factory responsible for generating unique but recognizable data file names and file objects.
 - SparkFileWriteFactory - Return data file writer for Parquet, ORC or AVRO
 
+** 创建QueryExecution
+- SessionState.executePlan(logicalPlan: LogicalPlan)  
+
+** Analalyze UnresolvedRelation(multipartIdentifier, ...)
+- Dataset.ofRows
+  - SessionState.executePlan(LogicalPlan)
+    - createQueryexecution(LogicalPlan, mode)
+  - QueryExecution.assertAnalyzed()
+    - lazy val analyzed
+      - RuleExecutor.execute(LogicalPlan)
+        - batches.foreach(...)
+          - ResolveRelations.apply
+            - ResolveRelations.lookupRelations
+  - new Dataset[Row](QueryExecution, ...)
+
 ** TODO 支持分层的数据湖格式（HTAP）
 - 基于lsm结构组织文件
   + 第一层采用tiering的方式排布
