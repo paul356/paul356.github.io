@@ -1,13 +1,13 @@
 ---
 layout: default
-title: 创客利器之ESP32（四）- 使用ESP32和MQTT控制小灯之小插曲
+title: 创客利器之ESP32（四点五）- 使用ESP32和MQTT控制小灯 - 小插曲
 tags: [esp32, MCU, micropython, MQTT]
 nav_order: {{ page.date }}
 sync_wexin: 1
 ---
 
 
-# 创客利器之ESP32（四）- 使用MicroPython与MQTT一起控制小灯之小插曲
+# 创客利器之ESP32（四点五）- 使用MicroPython与MQTT一起控制小灯 - 小插曲
 
 
 ## 小插曲
