@@ -82,7 +82,7 @@ def main():
     c.disconnect()
 ```
 
-由于这个方案并不完美，我还是决定上网找一下是否有人遇到和我一样的问题。还真找到了，有个人遇到了和我一样[问题](https://stackoverflow.com/questions/36184490/mqtt-client-disconnects-when-another-client-connects-to-the-server)。原来Mosquitto为每个client\_id只保留一个连接，而原始的main.py使用了相同的client\_id。所以第二个ESP32连接时，第一个ESP32会被断开。再修改main函数如下，给client\_id加上一个随机数，这样不同ESP32的client\_id大概率就不一样了。
+由于这个方案并不完美，我还是决定上网找一下是否有人遇到和我一样的问题。还真找到了，有个人遇到了和我一样[问题](https://stackoverflow.com/questions/36184490/mqtt-client-disconnects-when-another-client-connects-to-the-server)。原来Mosquitto为每个client\_id只保留一个连接，而原始的main.py使用了固定的client\_id。所以第二个ESP32连接时，第一个ESP32会被断开。再修改main函数如下，给client\_id加上一个随机数，这样不同ESP32的client\_id大概率就不一样了。
 
 ```python
 def main():
