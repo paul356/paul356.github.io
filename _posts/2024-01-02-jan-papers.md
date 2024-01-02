@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Paper Digest of December 2023
-tags: [Reinforcement Learning, QD-Tree]
+title: Paper Digest of January 2024
+tags: [Representation Learning, Query Cost Estimation, Embedding Learning, AI4DB]
 nav_order: {{ page.date }}
 ---
 
