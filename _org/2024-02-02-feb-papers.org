@@ -1,0 +1,16 @@
+#+OPTIONS: ^:nil
+#+BEGIN_EXPORT html
+---
+layout: default
+title: Paper Digest of Febuary 2024
+tags: [Query Optimization, Learned Query Optimizer, Machine Learning for Databases]
+nav_order: {{ page.date }}
+---
+#+END_EXPORT
+
+|--------------------------------------------------------+-----------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+----------------------------------------|
+| Title                                                  | Authors                                                                           | Synthesis                                                                                                                                                                                                         | Publisher   | Keywords                               |
+|--------------------------------------------------------+-----------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+----------------------------------------|
+| A Relational Model of Data for Large Shared Data Banks | P. Griffiths Selinger, M. M. Astrahan, D. D. Chamberlin, R. R. Lorie, T. G. Price | This paper present a framework for selecting the access path for single table scans and n-table joins. This method first emurates the different single relation scan plans, next it emurates second-level joins from the single relation plans, then enumerate third-level joins until all tables are in the join plans. In order to reduce the plans considered it introduces some heuristics to do early pruning favoring joins with high selectivity factors. | SIGMOD 1979 | Access Path Selection, Query Optimizer |
+|                                                        |                                                                                   |                                                                                                                                                                                                                   |             |                                        |
+|--------------------------------------------------------+-----------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+----------------------------------------|
