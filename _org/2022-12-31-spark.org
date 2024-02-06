@@ -10,7 +10,6 @@ nav_order: {{ page.date }}
 ---
 #+END_EXPORT
 * Spark数据湖
-
 ** 如果在spark中使用iceberg
 #+BEGIN_SRC bash
   spark-shell --packages org.apache.iceberg:iceberg-spark-runtime-3.3_2.13:1.2.1 \
@@ -75,7 +74,6 @@ SparkCatalog还依赖一些其他类实现其功能
 - PartitionedDataWriter
 - OutputFileFactory - Factory responsible for generating unique but recognizable data file names and file objects.
 - SparkFileWriteFactory - Return data file writer for Parquet, ORC or AVRO
-
 ** 创建QueryExecution
 - SessionState.executePlan(logicalPlan: LogicalPlan)  
 
@@ -120,15 +118,38 @@ SparkCatalog还依赖一些其他类实现其功能
         - SparkBatch.planInputPartitions()
           - input parameter taskGroups = SparkPartitioningAwareScan.taskGroups()
             - SparkPartitioningAwareScan.tasks()
-
 ** Iceberg Table Spec
 - Table Metadata (json file)
   - Snapshots
     - Manifest List (avro file)
       - Manifest Files (avro file; data manifest or delete manifest)
         - Data Files (parquet/orc, other supported formats)
+* 开发计划
+** 功能列表
+- 写流程修改
+  + [ ] 找到数据入口，写入日志 +和memtables+
+  + [ ] +Memtable flush和+ 日志回收
+  + [ ] 每个task生成一个loglet（日志的一段）
+  + [ ] 维护日志ID
+  + [ ] 设计衡量数据partition column的选择机制
+    * 数据分布是否均衡？
+    * 新老数据合并的开销？
+    * 小文件的数目？写与读的矛盾，通过控制小文件数目
+    * 查询开销：读取的无关数据的比重？
+  + [ ] 设计转换机制（修改partition，增加partition等）
+    * 乒乓转换：一个当前数据分布层，一个转换目标层
+    * 限制单个文件大小。写入一定量数据，同时完成同样量的转换，保证整个数据转换任务分散并可以完成
+    * 减少文件内容的转化，尽量按文件级别操作数据
+* OBSOLETE
+** 特性列表
+- 自动数据partitioning
+  + 数据先写日志
+  + 动态partitioning管理
+- 面向数据湖的两层Index结构
+  + 共享的文件级Index
+  + 单文件的Index
 
-** TODO 支持分层的数据湖格式（HTAP）
+** 支持分层的数据湖格式（HTAP）
 - 基于lsm结构组织文件
   + 第一层采用tiering的方式排布
   + 第二层以上采用leveling的方式组织
@@ -153,29 +174,3 @@ SparkCatalog还依赖一些其他类实现其功能
     - [ ] merge into
     - [ ] insert overwrite
   + 在内存中生成关键列的索引，生成索引文件或部分
-      
-* 特性
-** 特性列表
-- 自动数据partitioning
-  + 数据先写日志
-  + 动态partitioning管理
-- 面向数据湖的两层Index结构
-  + 共享的文件级Index
-  + 单文件的Index
-
-* 开发计划
-** 功能列表
-- 写流程修改
-  + [ ] 找到数据入口，写入日志 +和memtables+
-  + [ ] +Memtable flush和+ 日志回收
-  + [ ] 每个task生成一个loglet（日志的一段）
-  + [ ] 维护日志ID
-  + [ ] 设计衡量数据partition column的选择机制
-    * 数据分布是否均衡？
-    * 新老数据合并的开销？
-    * 小文件的数目？写与读的矛盾，通过控制小文件数目
-    * 查询开销：读取的无关数据的比重？
-  + [ ] 设计转换机制（修改partition，增加partition等）
-    * 乒乓转换：一个当前数据分布层，一个转换目标层
-    * 限制单个文件大小。写入一定量数据，同时完成同样量的转换，保证整个数据转换任务分散并可以完成
-    * 减少文件内容的转化，尽量按文件级别操作数据
