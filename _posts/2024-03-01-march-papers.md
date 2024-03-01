@@ -1,0 +1,10 @@
+---
+layout: default
+title: Paper Digest of March 2024
+tags: [Query Optimization, Learned Query Optimizer, Machine Learning for Databases]
+nav_order: {{ page.date }}
+---
+
+| Title                                                    | Authors                                                                                    | Synthesis                                                                                                                                                                                                                                                                                                                                                                  | Publisher | Keywords                                                                       |
+| OpenTuner: An Extensible Framework for ProgramAutotuning | Jason Ansel, Shoaib Kamil, Kalyan Veeramachaneni, Una-May O'Reilly, Saman Amarasinghe, etc | This paper present the configuration learning framework OpenTuner which uses a meta learning method called **multi-arm bandit with sliding window and area under the curve credit assignment** to ensemble serveral simple search methods. This software is provided as a python module publicly available. It can be used in configuration search problems in wide areas. | PACT 2014 | Multi-armed Bandit Problem, Area Under the Curve Credit Assignment, OpenTunner |
+|                                                          |                                                                                            |                                                                                                                                                                                                                                                                                                                                                                            |           |                                                                                |
