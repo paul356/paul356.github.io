@@ -1,0 +1,15 @@
+#+OPTIONS: ^:nil
+#+BEGIN_EXPORT html
+---
+layout: default
+title: Paper Digest of April 2024
+tags: [Hybrid Logical Clock]
+nav_order: {{ page.date }}
+---
+#+END_EXPORT
+
+|------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+----------|
+| Title                                                                              | Authors                                                                                | Synthesis                                                                                                                                                                                                         | Publisher   | Keywords |
+|------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+----------|
+| Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases | Sandeep Kulkarni , Murat Demirbas , Deepak Madeppa , Bharadwaj Avva, and Marcelo Leone | Logical clock is proposed by Lamport to ordering events in a distributed system, but it is not possible to relate logical clock to physical time. HLS is proposed to combine the advantage of logical clock and physical time, and it don't need the special hardware used in TrueTime and also have low space overhead. It builds on NTP and logical clock. It can be deployed in the cloud environment or private data centers which have NTP servers. It can be used to create consistent snapshots in distributed systems. | OPODIS 2014 | Logical Physical Clock, Logical Clock   |
+|------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+----------|
