@@ -54,9 +54,9 @@ SparkCatalog还依赖一些其他类实现其功能
 
 ** spark写流程
 - AppendData --(ExtendedV2Writes strategy)--> AppendData(write = SparkWriteBuilder.build())
-- Spark --> WriteToDataSourceV2Exec.run() --> V2TableWriteExec.writeWithV2
+- Spark --> AppendDataExec.run() --> V2TableWriteExec.writeWithV2
   + SparkWrite.asBatchAppend()
-  + BaseWrite.createBatchWriterFactory()
+  + BatchWrite.createBatchWriterFactory()
   + WriterFactory.createWriter()
   + DataWriter<InternalRow>.write(row)
     * UnpartitionedDataWriter.write(row)
