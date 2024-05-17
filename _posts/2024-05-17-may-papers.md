@@ -1,0 +1,9 @@
+---
+layout: default
+title: Paper Digest of May 2024
+tags: [R-Tree]
+nav_order: {{ page.date }}
+---
+
+| Title                                                                         | Authors                                                                   | Synthesis                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Publisher | Keywords |
+| The R\*-tree: An Efficient and Robust AccessMethod for Points and Rectangles+ | Norbert Beckmann, Hans-Peter Kriegel, Ralf Schneider, and Bernhard Seeger | R-Tree is a popular tree structure for managing spatial shapes. In the origional paper [Gut84](http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf). The origion algorithm is framed that minimum area increase is set as the only criteria. But it is showed in some cases the origional algorithm will generate bad results. Reconsider the criterias of a R-Tree with optimal retrieval performance this paper introduces a new algorithm for steps ChooseSubTree and QudraticSplit. The result show it can improve the retrieval performance at the cost of slightly increasing the insert cost. | SIGMOD 90 | R-Tree   |
