@@ -1,0 +1,118 @@
+#+OPTIONS: ^:nil
+#+BEGIN_EXPORT html
+---
+layout: default
+title: 尝试使用Rust为ESP系列控制器开发软件
+tags: [ESP, MCU, Rust]
+nav_order: {{ page.date }}
+sync_wexin: 1
+---
+#+END_EXPORT
+* 尝试使用Rust为ESP系列控制开发软件
+
+** 关于Rust语言
+Rust是近几年出现的新型系统编程语言。Rust在语言层面将安全作为第一考虑因素，通过语法和编译器规范开发人员使用内存的方式，从源头减少因错误使用内存指针导致内存非法读写的麻烦。另外Rust还是一个包含许多新型语言特性的编译语言，没有垃圾回收器，在兼顾了安全的同时还具有很出色的性能。虽然Rust学习曲线陡峭，还是得到了越来越多开发者的喜爱。
+
+Rust on ESP是一个将Rust引入ESP生态的开源项目，允许我们使用Rust语言为ESP系列控制器开发软件。笔者曾经使用Rust语言开发过一个小项目，感觉相比C++语言Rust有便捷的包管理器，有简洁的语法，对Rust语言留下了深刻的印象。但听说用Rust还可以为ESP控制器开发软件，我觉得非常惊奇，不过也对ESP那点资源能否运行复杂的Rust代码抱有疑虑。
+
+** 实验步骤
+我原来有个在ESP上运行WebDAV服务的想法，这样可以将ESP控制器当成一个移动存储服务器来使用。原来觉得需要自己开发一个简单的WebDAV服务器，但后来看到了开源的Rust项目dav-handler-rs。我想是不是可以将Rust on ESP和dav-handler-rs结合起来，但是之前应该没有人尝试过在ESP控制器上运行过dav-handler-rs，对于将针对服务器环境编写的软件能否在ESP上运行还是不太确定。
+我将尝试分成下面几个步骤：第一步先尝试安装Rust on ESP开发环境，然后成功运行一个简单的Rust程序；第二步运行一个http服务器hyper；第三步就是基于hyper运行webdav-handler-rs；最后解决遇到的问题。下面我们一步一步开始实验。最终的项目代码可以在[[https://docs.espressif.com/projects/esp-idf/zh_CN/latest/esp32/get-started/linux-macos-setup.html][这里]]下载。
+
+*** 第一步：安装Rust on ESP开发环境
+安装Rust on ESP开发环境依赖于Rust开发环境和esp-idf环境。我们需要按步骤安装这几个环境。
+1. 安装Rust环境
+   最方便的方式是使用[[https://rustup.rs/][rustup脚本]]安装Rust语言环境
+2. 安装Rust on ESP开发环境
+   跟着The Rust on ESP Book的[[https://docs.esp-rs.org/book/installation/index.html][开发环境设置]]章节安装开发环境，如果不知道目标平台，可以直接选择“[[https://docs.esp-rs.org/book/installation/riscv-and-xtensa.html][RISC-V and Xtensa targets]]”的安装步骤。
+3. 安装esp-idf环境
+   原本我们只需要安装esp-idf依赖的软件环境，可以在编译项目时让编译脚本去下载esp-idf。但是这里我们使用了5.3版本的esp-idf，所以这里需要先安装好esp-idf 5.3，后面编译时就省去了下载esp-idf的时间。另外编译脚本下载esp-idf版本最新是5.2，其中fat模块好像有问题，导致无法成功挂载fat格式的分区，后来通过切换到5.3解决了问题。
+
+这样就安装好了Rust on ESP编译环境。下面执行下面两个脚本来配置开发环境。
+#+begin_src shell
+  . $HOME/export-esp.sh
+  . $HOME/code/esp/esp-idf/export.sh
+#+end_src
+先执行下面的命令来生成一个Rust on ESP的模板项目，试试编译这个项目，这个项目会在串口打印一条“Hello, world!”的日志。
+#+begin_src shell
+  cargo generate esp-rs/esp-idf-template cargo
+  cargo build # 编译固件
+  cargo espflash flash # 刷写固件
+  cargo espflash monitor # 查看串口消息
+#+end_src
+
+*** 第二步：运行http服务程器hyper
+要运行hyper需要安装tokio软件包，但是tokio软件包不能直接在ESP上运行，需要做一些额外的配置。由于需要使用最新的mio、socket2、tokio包，在.cargo/config.toml中增加下列片段，注意target.*-espidf需要与目标控制器的处理器型号一致。
+#+begin_src toml
+    [target.xtensa-esp32s3-espidf]
+    rustflags = ["--cfg", "mio_unsupported_force_poll_poll"]
+#+end_src
+另外告诉cargo使用我们指定的mio、socket2、tokio代码库。在Cargo.toml增加下列片段。
+#+begin_src toml
+    [patch.crates-io]
+    mio = { git = "https://github.com/tokio-rs/mio", branch = "master" }
+    socket2 = { git = "https://github.com/rust-lang/socket2", branch = "master" }
+    tokio = { git = "https://github.com/tokio-rs/tokio", branch = "master" }
+#+end_src
+改好Cargo.toml之后就可以通过cargo安装tokio和hyper了。Cargo.toml的内容可以查看这个[[https://github.com/paul356/esp-webdav/][代码库]]。使用下列命令引入tokio、mio、hyper、hyper-util模块，以便后面使用。
+#+begin_src
+  cargo install tokio --features "ft,net,io-util,tokio-macros,macros,fs"
+  cargo install mio --features "log"
+  cargo install hyper --features "http1,server"
+  cargo install hyper-util --features "tokio"
+#+end_src
+
+*** 第三步：运行webdav-handler-rs程序
+引入了hyper之后，再引入webdav-handler软件包，这样我们就准备好了所有的软件包。
+#+begin_src 
+  cargo install dav-server
+#+end_src
+然后编写代码[[https://github.com/paul356/esp-webdav/blob/master/src/main.rs][main.rs]]将这些组件联系起来，代码先连接WiFi和挂载一个fat分区，然后启动hyper服务框架，并创建的webdav-handler来处理WebDAV请求。
+
+*** 第四步：二个小问题
+貌似至此都很顺利，但运行固件时还是遇到了问题。第一个问题是espflash默认的flash大小是4MB，而最终生成的代码镜像就有3.7MB，再加上其他的分区的空间已经超过了4MB。这就需要一个有更大的flash大小的开发板，幸好我的开发板有8MB。通过指定分区文件[[https://github.com/paul356/esp-webdav/][partitions.csv]]调整目标分区的大小以容纳代码镜像，并且添加flash-size选项。最后使用下列命令刷写固件。
+#+begin_src 
+  env WIFI_SSID=<ssid_name> WIFI_PASS=<ssid_pass> cargo espflash flash --flash-size=8mb
+#+end_src
+刷新好代码后上电测试，就遇到了第二个问题：堆栈溢出。tokio运行的pthread上总是堆栈不够用，通过gdb调试发现pthread默认的堆栈大小只有3KB。通过在创建tokio执行器时传入定制的堆栈大小32KB顺利解决问题。
+#+begin_src Rust
+      tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .thread_stack_size(32 * 1024)  // 配置堆栈大小
+        .build()?
+        .block_on(async move {
+#+end_src
+通过 ~cargo espflash monitor~ 我们可以看到WebDAV在运行。
+#+begin_src
+I (1486) hello_esp_rust: Connecting to Wi-Fi...
+I (3906) wifi:new:<6,0>, old:<1,0>, ap:<255,255>, sta:<6,0>, prof:11, snd_ch_cfg:0x0
+I (3906) wifi:state: init -> auth (0xb0)
+I (3926) wifi:state: auth -> assoc (0x0)
+I (3936) wifi:state: assoc -> run (0x10)
+I (3976) wifi:connected with tplink-5678, aid = 5, channel 6, BW20, bssid = 22:a9:97:88:8b:72
+I (3976) wifi:security: WPA2-PSK, phy: bgn, rssi: -42
+I (3976) wifi:pm start, type: 1
+
+I (3976) wifi:dp: 1, bi: 102400, li: 3, scale listen interval from 307200 us to 307200 us
+I (3986) wifi:set rx beacon pti, rx_bcn_pti: 0, bcn_timeout: 25000, mt_pti: 0, mt_time: 10000
+I (4006) hello_esp_rust: Waiting for association...
+I (4006) wifi:<ba-add>idx:0 (ifx:0, 22:a9:97:88:8b:72), tid:0, ssn:0, winSize:64
+I (4066) wifi:AP's beacon interval = 102400 us, DTIM period = 1
+I (4996) esp_netif_handlers: sta ip: 192.168.3.230, mask: 255.255.255.0, gw: 192.168.3.1
+I (4996) hello_esp_rust: Entering main Wi-Fi run loop...
+I (5006) hello_esp_rust: Stack high watermark 1: 22848
+I (264286) hello_esp_rust: Stack high watermark 2: 22848
+I (264296) hello_esp_rust: Stack high watermark 3: 16588
+I (264306) hello_esp_rust: accept webdav request /
+I (264306) hello_esp_rust: Stack high watermark 4: 16588
+I (264786) hello_esp_rust: Stack high watermark 3: 14476
+I (264796) hello_esp_rust: accept webdav request /HELLO.TXT
+I (264796) hello_esp_rust: Stack high watermark 4: 14476
+I (265116) hello_esp_rust: Stack high watermark 3: 14428
+I (265126) hello_esp_rust: accept webdav request /
+I (265126) hello_esp_rust: Stack high watermark 4: 14428
+#+end_src
+至此我们只开发了少量的代码，主要通过复用开源组件的方式轻松地在esp32s3上运行了一个WebDAV服务，不能不让人感叹Rust的开发效率。
+
+** 体验感受
+Rust语言非常高效，可以在一个资源非常有限的平台上运行WebDAV服务。并且Rust社区非常活跃，有大量优秀的开源软件包可以复用，使用cargo install命令就可以将开源组件快速引入我们的项目，非常便捷。总体来说Rust on ESP和服务器平台上的Rust开发体验几乎没有差别。如果不考虑学习Rust语言的过程，使用Rust开发ESP程序应该是一个不错的选择。

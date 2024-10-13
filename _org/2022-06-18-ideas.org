@@ -9,32 +9,35 @@ tags: [胡思乱想, ideas]
 nav_order: {{ page.date }}
 ---
 #+END_EXPORT
-最近有不少的怪诞想法，在这里记录一下，防止自己忘记，也许其中一部分还能成为现实。
-* 开源硬件
-** TODO [[https://github.com/paul356/MK32][基于ESP32-S3的智能键盘 [80%]]]
-   - [X] 支持定制按键keycode
-   - [ ] 支持定制宏
-   - [X] 支持蓝牙协议、USB
-   - [X] 支持WIFI Station、Soft AP
-   - [X] 使用QMK的matrix和tmk_core替换MK32的matrix,tmk_core
-** TODO 加密usb耳麦
-   - 支持设置密钥，使用相同密钥的usb耳麦可以实时对话
-   - 通过对语音加密和调制，输出加密语音
-   - 对收到的语音进行解调和解密，输出原语音
-** TODO 开源随身移动存储设备
-* 开源软件
-** TODO 安全匿名交换网络
-   - 基于gossip通讯，无中心的信息交换网络
-   - 信息匿名，无法追踪
-** TODO 基于块设备的TableFS(内核文件系统)
-   - 通过KV技术优化元数据操作
-   - 通过负载感知技术，动态调整索引结构
-   - 应用最新的索引技术:surf/learned index/B-trie/hybrid index
-** TODO 基于公有云的安全存储系统
-* 学习
-** DONE 雅思考试
+* Ideas
+最近有不少的怪想法，在这里记录一下，防止自己忘记，也许其中一部分还能成为现实。
+** 开源硬件
+*** TODO 制作一款ESP32开发板
+*** DONE [[https://github.com/paul356/MK32][基于ESP32-S3的智能键盘]] [100%]
+- [X] 支持定制按键keycode
+- [X] 支持定制宏
+- [X] 支持蓝牙协议、USB
+- [X] 支持WIFI Station、Soft AP
+- [X] 使用QMK的matrix和tmk_core替换MK32的matrix,tmk_core
+*** TODO 开源随身移动存储设备
+*** TODO 加密usb耳麦
+- 支持设置密钥，使用相同密钥的usb耳麦可以实时对话
+- 通过对语音加密和调制，输出加密语音
+- 对收到的语音进行解调和解密，输出原语音
+** 开源软件
+*** TODO 基于esp-idf的WebDAV服务器
+*** TODO 基于块设备的TableFS(内核文件系统)
+- 通过KV技术优化元数据操作
+- 通过负载感知技术，动态调整索引结构
+- 应用最新的索引技术:surf/learned index/B-trie/hybrid index
+*** TODO 基于公有云的安全存储系统
+*** TODO 安全匿名交换网络
+- 基于gossip通讯，无中心的信息交换网络
+- 信息匿名，无法追踪
+** 学习
+*** DONE 雅思考试
 - 学习羊驼雅思
 - 确认口语考试时间
-* 读书
-** TODO 九型人格
-** TODO rust语言编程
+** 读书
+*** TODO rust语言编程
+- [ ] 理解Scope
