@@ -100,7 +100,7 @@ if __name__ == "__main__":
     main()
 ```
 
-编辑好main.py, 打开浏览器，输入<http://><esp32\_ip>:8266，使用webrepl上传main.py。连接好小灯，如下图这样。
+编辑好main.py, 打开浏览器，输入 `http://<esp32_ip>:8266` ，使用webrepl上传main.py。连接好小灯，如下图这样。
 
 ![img](/images/esp32-with-led.jpg)
 
