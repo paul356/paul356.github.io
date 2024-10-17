@@ -7,7 +7,7 @@ sync_wexin: 1
 ---
 
 
-# 尝试使用Rust为ESP系列控制开发软件
+# 尝试使用Rust为ESP系列控制器开发软件
 
 
 ## 关于Rust语言
