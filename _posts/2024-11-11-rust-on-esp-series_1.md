@@ -19,7 +19,7 @@ sync_wexin: 1
 
 ## 原理浅析
 
-使用Rust语言为ESP芯片开发程序是在PC或服务器上利用交叉编译的方法，生成能够运行在ESP芯片上的代码。Rust on ESP交叉编译环境通过扩展通用Rust开发环境而实现。通过增加必要的扩展，使Rust代码可以被编译为可运行在ESP上的机器码；并提供针对ESP的代码库，使得可以在Rust代码中访问ESP系统的设备。甚至我们可以直接使用系统库std的功能，就像在PC上开发代码一样使用内存分配、创建用户线程、文件接口等标准库接口。我们也可以不选择使用系统库std，只使用Rust的核心库core，可以生成更小镜像，但也不能使用内存分配器、线程模型和文件系统等抽象接口，代码直接调用硬件驱动提供的接口。
+使用Rust语言为ESP芯片开发程序是在PC或服务器上利用交叉编译的方法，生成能够运行在ESP芯片上的程序的一种方法。Rust on ESP交叉编译环境通过扩展通用Rust开发环境而实现。通过增加必要的扩展，使Rust代码可以被编译为可运行在ESP上的机器码；并提供针对ESP的代码库，使得可以在Rust代码中访问ESP系统的设备。甚至我们可以直接使用系统库std的功能，就像在PC上开发代码一样使用内存分配、创建用户线程、文件接口等标准库接口。我们也可以不选择使用系统库std，只使用Rust的核心库core，可以生成更小镜像，但也不能使用内存分配器、线程模型和文件系统等抽象接口，代码直接调用硬件驱动提供的接口。
 
 
 ## Linux环境下安装开发环境
@@ -184,4 +184,4 @@ I (433) main_task: Returned from app_main()
 
 ## 总结
 
-恭喜你完成了Rust on ESP的安装，现在你就可以用Rust给ESP系列开发板写代码了。下面我们会进一步探索使用Rust语言我们可以做出哪些有趣的尝试。本文主要参考的互联网上的资料，其中关于Rust on ESP开发环境的安装主要参考的[The Rust on ESP Book](https://docs.esp-rs.org/book/)，ESP-IDF的安装参考的乐鑫提供的[安装指导](https://docs.espressif.com/projects/esp-idf/zh_CN/latest/esp32/get-started/linux-macos-setup.html)。安装过程繁琐，难免有所疏漏，如果大家发现问题欢迎大家指正。
+恭喜你完成了Rust on ESP的安装，现在你就可以用Rust给ESP系列开发板写代码了。下面我们会进一步探索使用Rust语言我们可以做出哪些有趣的尝试。本文主要参考的互联网上的资料，其中关于Rust on ESP开发环境的安装主要参考的[The Rust on ESP Book](https://docs.esp-rs.org/book/)，ESP-IDF的安装参考的乐鑫提供的[安装指导](https://docs.espressif.com/projects/esp-idf/zh_CN/latest/esp32/get-started/linux-macos-setup.html)。安装过程繁琐，难免有所疏漏。如果大家有发现什么问题，欢迎指正。
