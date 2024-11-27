@@ -26,7 +26,9 @@ sync_wexin: 1
 
 如果你熟悉docker的使用，有一个更加简便的方法就是使用docker镜像[idf-rust](https://hub.docker.com/r/espressif/idf-rust/tags)，这个镜像已经包含一个安装好了的Rust开发环境。下面是安装Rust on ESP的详细过程。
 
-1.  安装Rust on ESP开发环境 开发环境基于通用的Rust的开发环境，第一步和安装普通的Rust开发环境一样。如果是Linux环境，可以在命令行中运行[rustup](https://rustup.rs/)网站的安装命令。这个命令会自动下载Rust开发环境并安装。
+1.  安装Rust on ESP开发环境
+    
+    开发环境基于通用的Rust的开发环境，第一步和安装普通的Rust开发环境一样。如果是Linux环境，可以在命令行中运行[rustup](https://rustup.rs/)网站的安装命令。这个命令会自动下载Rust开发环境并安装。
     
     ```shell
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -50,10 +52,12 @@ sync_wexin: 1
     -   支持Xtensa核心的LLVM
     
     -   GCC工具链用于链接过程，并负责生成二进制文件
-    
-    安装过程可能需要花不少时间，一方面因为需要下载不少软件组件，另外还受到下载速度影响。如果网速不稳，经常遇到下载软件包失败的问题，可能需要通过代理或镜像来解决。网络问题是当前安装过程中的最大麻烦，其他过程还比较简单。
+        
+        安装过程可能需要花不少时间，一方面因为需要下载不少软件组件，另外还受到下载速度影响。如果网速不稳，经常遇到下载软件包失败的问题，可能需要通过代理或镜像来解决。网络问题是当前安装过程中的最大麻烦，其他过程还比较简单。
 
-2.  安装系统库的依赖 成功完成上面的步骤，我们已经安装好了开发环境。但要使用Rust系统库std，我们还要安装std依赖的组件。面向ESP的系统库std有两个依赖，ESP-IDF开发框架和ldproxy库。
+2.  安装系统库的依赖
+    
+    成功完成上面的步骤，我们已经安装好了开发环境。但要使用Rust系统库std，我们还要安装std依赖的组件。面向ESP的系统库std有两个依赖，ESP-IDF开发框架和ldproxy库。
     
     先安装ESP-IDF开发框架，第一步安装ESP-IDF依赖的第三方工具。
     
@@ -74,32 +78,32 @@ sync_wexin: 1
         ```shell
         sudo pacman -S --needed gcc git make flex bison gperf python cmake ninja ccache dfu-util libusb
         ```
-    
-    下面安装ESP-IDF框架本身，先下载ESP-IDF的源代码。当前的稳定版本是5.3，所以这里选择代码分支release/v5.3，并更新所有子模块。
-    
-    ```shell
-    mkdir -p ~/esp
-    cd ~/esp
-    git clone --recursive https://github.com/espressif/esp-idf.git
-    git checkout release/v5.3
-    git submodule update --init --recursive
-    ```
-    
-    下载好代码后开始ESP-IDF安装过程，进入esp-idf目录，执行下面命令。第二条命令用于将下载源导向乐鑫科技为国内网络提供的资源，这样下载速度会更快。
-    
-    ```shell
-    cd ~/esp/esp-idf/
-    export IDF_GITHUB_ASSETS="dl.espressif.cn/github_assets"
-    ./install.sh esp32,esp32s2,esp32s3
-    ```
-    
-    安装好ESP-IDF框架后，再安装ldproxy库，这个比较简单。
-    
-    ```shell
-    cargo install ldproxy
-    ```
-    
-    到这里就完成了系统库std依赖的安装，系统库已经包含在espup安装的组件内了，所以系统库本身已经安装好了。
+        
+        下面安装ESP-IDF框架本身，先下载ESP-IDF的源代码。当前的稳定版本是5.3，所以这里选择代码分支release/v5.3，并更新所有子模块。
+        
+        ```shell
+        mkdir -p ~/esp
+        cd ~/esp
+        git clone --recursive https://github.com/espressif/esp-idf.git
+        git checkout release/v5.3
+        git submodule update --init --recursive
+        ```
+        
+        下载好代码后开始ESP-IDF安装过程，进入esp-idf目录，执行下面命令。第二条命令用于将下载源导向乐鑫科技为国内网络提供的资源，这样下载速度会更快。
+        
+        ```shell
+        cd ~/esp/esp-idf/
+        export IDF_GITHUB_ASSETS="dl.espressif.cn/github_assets"
+        ./install.sh esp32,esp32s2,esp32s3
+        ```
+        
+        安装好ESP-IDF框架后，再安装ldproxy库，这个比较简单。
+        
+        ```shell
+        cargo install ldproxy
+        ```
+        
+        到这里就完成了系统库std依赖的安装，系统库已经包含在espup安装的组件内了，所以系统库本身已经安装好了。
 
 
 ## 开发环境测试
