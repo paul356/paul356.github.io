@@ -19,7 +19,7 @@ Rust on ESP是一个将Rust引入ESP生态的开源项目，允许我们使用Ru
 
 ## 实验步骤
 
-我原来有个在ESP上运行WebDAV服务的想法，这样可以将ESP控制器当成一个移动存储服务器来使用。原来觉得需要自己开发一个简单的WebDAV服务器，但后来看到了开源的Rust项目dav-handler-rs。我想是不是可以将Rust on ESP和dav-handler-rs结合起来，但是之前应该没有人尝试过在ESP控制器上运行过dav-handler-rs，对于将针对服务器环境编写的软件能否在ESP上运行还是不太确定。 我将尝试分成下面几个步骤：第一步先尝试安装Rust on ESP开发环境，然后成功运行一个简单的Rust程序；第二步运行一个http服务器hyper；第三步就是基于hyper运行webdav-handler-rs；最后解决遇到的问题。下面我们一步一步开始实验。最终的项目代码可以在[这里](https://docs.espressif.com/projects/esp-idf/zh_CN/latest/esp32/get-started/linux-macos-setup.html)下载。
+我原来有个在ESP上运行WebDAV服务的想法，这样可以将ESP控制器当成一个移动存储服务器来使用。原来觉得需要自己开发一个简单的WebDAV服务器，但后来看到了开源的Rust项目dav-handler-rs。我想是不是可以将Rust on ESP和dav-handler-rs结合起来，但是之前应该没有人尝试过在ESP控制器上运行过dav-handler-rs，对于将针对服务器环境编写的软件能否在ESP上运行还是不太确定。 我将尝试分成下面几个步骤：第一步先尝试安装Rust on ESP开发环境，然后成功运行一个简单的Rust程序；第二步运行一个http服务器hyper；第三步就是基于hyper运行webdav-handler-rs；最后解决遇到的问题。下面我们一步一步开始实验。最终的项目代码可以在[这里](https://github.com/paul356/esp-webdav)下载。
 
 
 ### 第一步：安装Rust on ESP开发环境
