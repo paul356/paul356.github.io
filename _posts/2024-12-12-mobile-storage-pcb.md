@@ -39,4 +39,9 @@ PCB电路图做好后，通过插件Frabrication Toolkit（一样通过Plugin an
 
 ## 后记
 
-本文中的电路原理图和PCB电路文件可以从[这里](https://github.com/paul356/esp32s3-storage)下载。PCB厂家的效率很高，我的短文还没有写完，做好的PCB就已经到了。成品长这个样子，除了黑色的油漆层，是不是KiCad8中看起来差不多。下一步就是焊板子，做测试，有进展了再给大家汇报。 ![img](/images/esp32-storage-real-pcb.jpg)
+本文中的电路原理图和PCB电路文件可以从[esp32s3-storage](https://github.com/paul356/esp32s3-storage)下载。PCB厂家的效率很高，我的短文还没有写完，做好的PCB就已经到了。成品长这个样子，除了黑色的油漆层，是不是KiCad8中看起来差不多。下一步就是焊板子，做测试，有进展了再给大家汇报。 ![img](/images/esp32-storage-real-pcb.jpg)
+
+
+## 链接链表
+
+1.  *esp32s3-storage* - <https://github.com/paul356/esp32s3-storage>
