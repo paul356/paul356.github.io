@@ -1,0 +1,159 @@
+---
+layout: default
+title: 一种基于ESP32丰富连接能力的移动存储设备 -- 验证屏幕显示
+tags: [Rust on ESP, ESP32, SPI, LED Display, Embedded Graphics]
+nav_order: {{ page.date }}
+sync_wexin: 1
+---
+
+
+# 一种基于ESP32丰富连接能力的移动存储设备 &#x2013; 验证屏幕显示
+
+
+## 前言
+
+我新设计的PCB包含了一个SPI接口，可支持SPI接口的显示模块。本文尝试使用Rust在屏幕上显示信息。 ![img](/images/esp32-storage-assembled-pcb-spi.png)
+
+本系列其他文章
+
+1.  [基于ESP32的移动存储设备](https://paul356.github.io/2024/10/31/mobile-storage.html)
+2.  [一种基于ESP32丰富连接能力的移动存储设备 &#x2013; 电路设计](https://paul356.github.io/2024/12/12/mobile-storage-pcb.html)
+3.  [一种基于ESP32丰富连接能力的移动存储设备 &#x2013; 测试SD卡读写](https://paul356.github.io/2024/12/27/mobile-storage-sd-card-test.html)
+
+
+## 屏幕显示程序
+
+屏幕显示程序分为三个步骤，先使用esp-idf-hal库配置SPI接口，然后创建显示芯片ST7789的驱动程序，最后通过图形库embedded-graphics在屏幕上显示图形、文字、图像等内容。 ![img](/images/led-display-output.png)
+
+
+### 配置SPI接口
+
+配置SPI接口比较简单，通过esp-idf-hal库的spi::SpiDeviceDriver对象就可配置SPI接口。
+
+```Rust
+let peripherals = peripherals::Peripherals::take().unwrap();
+
+let blk = peripherals.pins.gpio14;
+let dc = peripherals.pins.gpio13;
+let scl = peripherals.pins.gpio12;
+let sda = peripherals.pins.gpio11;
+let cs = peripherals.pins.gpio10;
+let rst = peripherals.pins.gpio9;
+
+let mut backlight = gpio::PinDriver::output(blk)?;
+backlight.set_high()?;
+
+let spi_drv = spi::SpiDeviceDriver::new_single(
+    peripherals.spi2,
+    scl,
+    sda,
+    Option::<gpio::Gpio13>::None,
+    Some(cs),
+    &spi::SpiDriverConfig::new().dma(spi::Dma::Disabled),
+    &spi::SpiConfig::new().baudrate(26u32.MHz().into()),
+)?;
+```
+
+管脚的分配要和硬件设计一致，电路设计时使用了ESP32S3的FSPI作为显示接口。其实这里只有scl和sda必须使用FSPICLK和FSPID对应的GPIO口，除了cs的其他信号可以自由选择GPIO口。至于cs是否可以使用一般的GPIO口我不太确定，为了保险我还是给cs信号分配了FSPICS0对应的GPIO口。
+
+
+### 创建ST7789芯片驱动
+
+芯片驱动主要使用display\_interface\_spi和mipidsi库，创建一个display对象。该对象可以接受指令和数据，控制屏幕上每个像素颜色与亮度。
+
+```Rust
+let spi_intf = SPIInterface::new(spi_drv, gpio::PinDriver::output(dc)?);
+
+let mut display = mipidsi::Builder::new(mipidsi::models::ST7789, spi_intf)
+    .reset_pin(gpio::PinDriver::output(rst)?)
+    .color_order(mipidsi::options::ColorOrder::Rgb)
+    .invert_colors(mipidsi::options::ColorInversion::Inverted)
+    .display_size(240, 300) // display area is 240*280, but there is a -20 pixels offset
+    .init(&mut delay::Ets).map_err(|e| {
+        log::error!("Error initializing display: {:?}", e);
+        EspError::from(-1).unwrap()
+    })?;
+
+display.clear(RgbColor::BLACK)
+    .map_err(|e| {
+        log::error!("Error clear background: {:?}", e);
+        EspError::from(-1).unwrap()
+    })?;
+```
+
+上面代码段的最后一行代码display.clear使用纯色填充整个屏幕。display还支持set\_pixel、draw\_iter等接口，会被上层图形函数库如embedded\_graphics调用。
+
+另外需要注意的是，ST7789的分辨率其实是240\*320，网上的显示模块有的只有240\*280个像素。制作显示模块的厂家可能会选取ST7789显示范围的中间部分，这样的显示模块上下各有一个240\*20的区域是无法显示的，有效的y坐标位于20到280之间。
+
+
+### 使用图形库绘制内容
+
+这里我使用了embedded\_graphics来绘制图形，具体的接口文档请参考[doc.rs](https://docs.rs/embedded-graphics/latest/embedded_graphics/)。
+
+```Rust
+let text = "大家好";
+
+let style = MonoTextStyle::new(&NOTO_SANS_MONO_CJK_SC_REGULAR_36, Rgb565::WHITE);
+
+Text::new(text, Point::new(60, 50), style).draw(&mut display)
+    .map_err(|e| {
+        log::error!("Error drawing text: {:?}", e);
+        EspError::from(-1).unwrap()
+    })?;
+
+let tri_style = PrimitiveStyleBuilder::new()
+    .fill_color(Rgb565::BLACK)
+    .stroke_color(Rgb565::RED)
+    .stroke_width(3)
+    .build();
+
+Triangle::new(Point::new(60, 200), Point::new(80, 235), Point::new(40, 235))
+    .into_styled(tri_style)
+    .draw(&mut display)
+    .map_err(|e| {
+        log::error!("Error drawing triangle: {:?}", e);
+        EspError::from(-1).unwrap()
+    })?;
+
+let rect_style = PrimitiveStyleBuilder::new()
+    .fill_color(Rgb565::BLACK)
+    .stroke_color(Rgb565::GREEN)
+    .stroke_width(3)
+    .build();
+
+Rectangle::new(Point::new(100, 200), Size::new(40, 40))
+    .into_styled(rect_style)
+    .draw(&mut display)
+    .map_err(|e| {
+        log::error!("Error drawing rectangle: {:?}", e);
+        EspError::from(-1).unwrap()
+    })?;
+
+let circle_style = PrimitiveStyleBuilder::new()
+    .fill_color(Rgb565::BLACK)
+    .stroke_color(Rgb565::BLUE)
+    .stroke_width(3)
+    .build();
+
+Circle::new(Point::new(160, 200), 40)
+    .into_styled(circle_style)
+    .draw(&mut display)
+    .map_err(|e| {
+        log::error!("Error drawing circle: {:?}", e);
+        EspError::from(-1).unwrap()
+    })?;
+```
+
+这段代码向屏幕上显示了一行文字，然后在这行文字的下面显示了一个红色三角形、一个绿色正方形和一个蓝色圆形。几何图形的显示比较直接，要显示汉字相对麻烦一点。因为embedded-graphics目前只支持简单的等宽字体，而大部分汉字字体库的格式是TrueType字体，embedded-graphics并不支持。目前智能使用折中的方案，将包含汉字的TrueType字体转换成等宽的位图字体。这里使用了一个开源项目[rust-embedded-graphics-cjk](https://github.com/ferristseng/rust-embedded-graphics-cjk)，这个项目把TrueType字体转换成embedded-graphics支持的等宽字体。
+
+
+## 后记
+
+以上就是如何使用Rust控制LED屏幕显示的关键技术点，验证了使用Rust可以比较方便地使用显示屏显示信息。有兴趣的读者可以到[sd\_card\_rust](https://github.com/paul356/sd_card_rust/)项目中查看完整代码，此项目需要使用一个经过修改的[rust-embedded-graphics-cjk](https://github.com/paul356/rust-embedded-graphics-cjk)项目。
+
+
+## 链接
+
+1.  doc.rs - <https://docs.rs/embedded-graphics/latest/embedded_graphics/>
+2.  sd\_card\_rust - <https://github.com/paul356/sd_card_rust>
+3.  rust-embedded-graphics-cjk - <https://github.com/paul356/rust-embedded-graphics-cjk>
