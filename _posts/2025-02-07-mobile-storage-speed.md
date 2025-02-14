@@ -24,7 +24,7 @@ sync_wexin: 1
 
 ## 测试micro-storage
 
-本文使用的代码都可以在代码仓库[esp-webdav](https://github.com/paul356/esp-webdav)中找到。在电脑上可以访问运行起来的WebDAV服务。
+本文使用的代码都可以在代码仓库[esp-webdav](https://github.com/paul356/esp-webdav)中找到，在微型存储上运行程序后，我们可以在电脑上通过WebDAV服务查看TF卡上的数据。
 
 ![img](/images/esp_webdav_screenshot.png)
 
