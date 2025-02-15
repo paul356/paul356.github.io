@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 一种基于ESP32丰富连接能力的移动存储设备 -- 测试TF读写速度
+title: 一种基于ESP32丰富连接能力的移动存储设备 -- 测试TF卡读写速度
 tags: [Rust on ESP, ESP32, SPI, SDMMC， TFCARD]
 nav_order: {{ page.date }}
 sync_wexin: 1
@@ -16,22 +16,22 @@ sync_wexin: 1
 
 本系列其他文章
 
-1.  [基于ESP32的移动存储设备](https://paul356.github.io/2024/10/31/mobile-storage.html)
-2.  [一种基于ESP32丰富连接能力的移动存储设备 &#x2013; 电路设计](https://paul356.github.io/2024/12/12/mobile-storage-pcb.html)
-3.  [一种基于ESP32丰富连接能力的移动存储设备 &#x2013; 测试SD卡读写](https://paul356.github.io/2024/12/27/mobile-storage-sd-card-test.html)
-4.  [一种基于ESP32丰富连接能力的移动存储设备 &#x2013; 验证屏幕显示](https://paul356.github.io/2025/01/06/mobile-storage-display.html)
+1.  [一种基于ESP32丰富连接能力的的移动存储设备](https://paul356.github.io/2024/10/31/mobile-storage.html)
+2.  [一种基于esp32丰富连接能力的移动存储设备 &#x2013; 电路设计](https://paul356.github.io/2024/12/12/mobile-storage-pcb.html)
+3.  [一种基于esp32丰富连接能力的移动存储设备 &#x2013; 测试sd卡读写](https://paul356.github.io/2024/12/27/mobile-storage-sd-card-test.html)
+4.  [一种基于esp32丰富连接能力的移动存储设备 &#x2013; 验证屏幕显示](https://paul356.github.io/2025/01/06/mobile-storage-display.html)
 
 
 ## 测试micro-storage
 
-本文使用的代码都可以在代码仓库[esp-webdav](https://github.com/paul356/esp-webdav)中找到，在微型存储上运行程序后，我们可以在电脑上通过WebDAV服务查看TF卡上的数据。
+本文使用的代码都可以在代码仓库[esp-webdav](https://github.com/paul356/esp-webdav)中找到，在微型存储上运行程序后，我们可以在电脑上通过webdav服务查看tf卡上的数据。
 
 ![img](/images/esp_webdav_screenshot.png)
 
 
 ### 测试顺序读取速度
 
-我们希望测得TF卡的顺序读取速度，因为通过WebDAV协议访问基本上不会有随机读取的场景。为了测试无干扰下的TF卡顺序读取速度，我写了一个顺序读取一个大文件的函数。
+我们希望测得TF卡的顺序读取速度，因为通过WebDAV协议访问基本上不会有随机读取的场景，测试顺序读取速度应该就够了。为了测试无干扰下的TF卡顺序读取速度，我写了一个顺序读取一个大文件的函数。
 
 ```Rust
 async fn test_file_perf(mount_point: &str) -> anyhow::Result<()> {
