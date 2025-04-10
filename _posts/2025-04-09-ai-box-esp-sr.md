@@ -12,7 +12,7 @@ sync_wexin: 1
 
 ## 前言
 
-我在查找资料时，看到一个叫[xiaozhi-esp32](https://github.com/78/xiaozhi-esp32)的项目。这个项目实现了一个AI盒子，允许用户自定义一个可以交互的虚拟好友。这个项目非常收欢迎，但这个AI盒子需要一个后台服务xiaozhi.me来支撑，AI盒子作为语音处理的前端设备。看来已经有人想到AI盒子的想法了，我打算实现一个不需要额外增加后台服务的AI盒子，可以直接向LLM提问。
+我在查找资料时，看到一个叫[xiaozhi-esp32](https://github.com/78/xiaozhi-esp32)的项目。这个项目实现了一个AI盒子，允许用户自定义一个可以交互的虚拟好友。这个项目非常受欢迎，但这个AI盒子需要一个后台服务xiaozhi.me来支撑，AI盒子作为语音处理的前端设备。看来已经有人想到AI盒子的想法了，我打算实现一个不需要额外增加后台服务的AI盒子，可以直接向LLM提问。
 
 这一篇文章是我尝试使用esp-sr实现语音识别的一个总结。本文设计的代码可以在代码仓[ai-chatbox](https://github.com/paul356/ai-chatbox)(链接在附录中)，使用的硬件是XIAO ESP32S3 Sense。
 
@@ -26,7 +26,7 @@ sync_wexin: 1
 
 ### 创建Rust on ESP项目并引入esp-sr
 
-需要解决的第一个问题是如何将esp-sr添加到Rust on ESP项目中。首先创建一个Rust on ESP项目，进入Rust on ESP开发环境（如何创建Rust on ESP开发环境请参考[“准备Rust on ESP开发环境”](https://paul356.github.io/2024/11/11/rust-on-esp-series_1.html)），执行命令 `cargo generate esp-rs/esp-idf-template cargo` , 根据提示创建一个空的Rust on ESP项目。由于esp-sr不是esp-idf中默认包含的代码库，需要我们显式地引入这个代码库。我们知道在C/C++项目中可以通过 `idf.py add-dependency espressif/esp-sr` 来添加扩展库，但是在Rust on ESP项目中如何做呢？通过查看[esp-idf-sys编译选项](https://github.com/esp-rs/esp-idf-sys/blob/master/BUILD-OPTIONS.md)，可以在 `package.metadata.esp-idf-sys` 配置段中添加 `extra_components` 配置項来引入扩展库。在Cargo.toml中添加如下配置。
+需要解决的第一个问题是如何将esp-sr添加到Rust on ESP项目中。首先创建一个Rust on ESP项目，进入Rust on ESP开发环境（如何创建Rust on ESP开发环境请参考[“准备Rust on ESP开发环境”](https://paul356.github.io/2024/11/11/rust-on-esp-series_1.html)），执行命令 `cargo generate esp-rs/esp-idf-template cargo` , 根据提示创建一个空的Rust on ESP项目。由于esp-sr不是esp-idf中默认包含的代码库，需要我们显式地引入这个代码库。我们知道在C/C++项目中可以通过 `idf.py add-dependency espressif/esp-sr` 来添加扩展库，但是在Rust on ESP项目中如何做呢？通过查看[esp-idf-sys编译选项](https://github.com/esp-rs/esp-idf-sys/blob/master/BUILD-OPTIONS.md)，可以在 `package.metadata.esp-idf-sys` 配置段中添加 `extra_components` 配置项来引入扩展库。在Cargo.toml中添加如下配置。
 
 ```toml
 [package.metadata.esp-idf-sys]
