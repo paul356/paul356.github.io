@@ -13,11 +13,11 @@ sync_wexin: 0
 
 ** 起因
 
-我家里有一个NAS服务器，存储空间由一个ZFS Pool提供。因为平常只是存一些共享的文档数据，数据增长不快，且ZFS一直工作得很稳定，我也不需要经常折腾这个设备。但是最近我多了一块空闲磁盘，我觉得空放着挺可惜，想将这块磁盘用起来。一个危险的想法就生成了，我想把这个磁盘加到ZFS Pool中去。
+我家里有一个NAS服务器，存储空间由一个ZFS Pool提供。因为平常只是存一些共享的文档数据，数据增长不快，且ZFS一直工作得很稳定，我也就不需要经常折腾这个设备。但是最近我多了一块空闲磁盘，我觉得空放着挺可惜，想将这块磁盘用起来。一个危险的想法就生成了，我想把这个磁盘加到ZFS Pool中去。
 
 ** 事件经过
 
-我查了zpool的文章，有个zpool add和zpool attach的命令。我感觉zpool attach应该是追加磁盘的，但是试了几个命令都是失败的。
+我查了zpool的文章，有个zpool add和zpool attach的命令。我感觉[[https://openzfs.github.io/openzfs-docs/man/v2.3/8/zpool-attach.8.html][zpool attach]]应该是追加磁盘的，但是试了几个命令都是失败的。
 
 #+begin_src txt
 root@my-server:/home/user# zpool attach pool_name sdb sdd
@@ -30,7 +30,7 @@ root@my-server:/home/user# zpool attach -f pool_name raidz1-0 sdd
 cannot attach sdd to raidz1-0: can only attach to mirrors and top-level disks
 #+end_src
 
-我的磁盘是sdd，ZFS的报错信息感觉很没有头绪，什么“no such device in pool”，难道我需要先将我的盘加到pool里面么？attach命令不行，不是还有add命令么？我还没有意识到，存储系统是不能随便胡乱操作的，也没有思考失败其实是不支持的缘故。我就执行add命令，这个命令失败了。
+我的磁盘是sdd，ZFS的报错信息感觉很没有头绪，什么“no such device in pool”，难道我需要先将我的盘加到pool里面么？attach命令不行，不是还有add命令么？我应该知道，存储系统是不能随便胡乱操作的。我转而尝试add命令，这个命令也失败了。
 
 #+begin_src txt
 root@my-server:/home/user# zpool add pool_name  sdd
@@ -69,7 +69,7 @@ root@my-server:/home/user# zpool attach pool_name sdc sdd
 /dev/sdd is in use and contains a unknown filesystem.
 #+end_src
 
-什么意思？难道是因为sdd原来的数据没有清空，事后回过神来才知道这个“a unknown filesystem”是因为sdd已经加到pool里面了。我在错误的道路上继续狂奔，是不是需要用dd将原来的数据清除掉？因为觉得这个sdd是个空闲的盘，觉得不会有什么问题，但其实并不是。我用dd命令把整个盘都写了一遍零。这个时候已经打错特错了。在我重启了服务器之后，啊...，pool不见了。使用“zpool import”命令也失败了。第一次import告诉我sdd是UNAVAIL状态，使用“-f”也不行，最后直接让我重建存储池了，可惜我并没有备份啊。
+什么意思？难道是因为sdd原来的数据没有清空，事后回过神来才知道这个“a unknown filesystem”是因为sdd已经加到pool里面了。我在错误的道路上继续狂奔，是不是需要用dd将原来的数据清除掉？因为觉得这个sdd是个空闲的盘，觉得不会有什么问题，但其实并不是。我用dd命令把整个盘都写了一遍零。这个时候已经铸成大错了。在我重启了服务器之后，啊...，pool不见了。使用“zpool import”命令也失败了。第一次import告诉我sdd是UNAVAIL状态，使用“-f”也不行，最后直接让我重建存储池了，可惜我并没有备份啊。
 
 #+begin_src txt
 root@my-server:/home/user# zpool import
@@ -93,11 +93,11 @@ cannot import 'pool_name': no such pool or dataset
 	a backup source.
 #+end_src
 
-这个时候我已经头皮发麻了。赶紧上网搜索解决方案，原来“zfs add”是给pool增加vdev，这样这个sdd和原来raidz1-0会形成一个raid0的存储池，数据会在两个设备间打散开来。好家伙，这样子整个存储池基本就没有冗余度了，只要sdd挂了，存储池就挂了，而我还来个大杀器。我当时真是欲哭无泪，积攒了十年的数据，好多手机和相机拍的照片，还有很多好看的电影，可能全都没了。
+这个时候我已经头皮发麻了。赶紧上网搜索解决方案，原来“zfs add”是给pool增加vdev，这样这个sdd和原来raidz1-0会形成一个raid0的存储池，数据会在两个设备间打散开来。好家伙，这样子整个存储池基本就没有冗余度了，只要sdd挂了，存储池就挂了，而我还来了个大杀器。我当时真是欲哭无泪，积攒了十年的数据，好多手机和相机拍的照片，还有很多好看的电影，可能全都没了。
 
 ** 一线生机
 
-在我把sdd加到原来的pool之后，并没有写什么数据，原来的数据都应该在之前的几块盘上，我觉得还有恢复数据的可能。我就上网找数据恢复方法，实在不行研究ZFS代码也行。我幸运地找到了一个Github Issue [[https://github.com/openzfs/zfs/issues/852]["Import a pool with missing top-level vdevs"]]。原来对于这种有顶层的磁盘损坏的pool，ZFS支持采用只读的方式导入。只能试一试了，方法并不复杂。先修改OpenZFS配置项，然后使用import命令。
+由于在我把sdd加到原来的pool之后，并没有写什么数据，我想原来的数据都应该还在之前盘上，感觉还有恢复的可能。我上网找数据恢复方法，实在不行研究ZFS代码也行。幸运地我找到了一个Github Issue [[https://github.com/openzfs/zfs/issues/852]["Import a pool with missing top-level vdevs"]]。原来对于这种有顶层设备损坏的pool，ZFS支持采用只读的方式导入。只能试一试了，方法并不复杂。先修改OpenZFS配置项，然后使用import命令。
 
 #+begin_src txt
 root@my-server:/home/user# echo 1 > /sys/module/zfs/parameters/zfs_max_missing_tvds
@@ -106,8 +106,8 @@ root@my-server:/home/user# cat /sys/module/zfs/parameters/zfs_max_missing_tvds
 root@my-server:/home/user# zpool import -o readonly=on pool_name
 #+end_src
 
-成功了！因为sdd上分出去的空间不多，大部分数据都还在，赶紧备份数据。但这个pool没法恢复正常了，只能在数据备份后重建存储池，倒腾一下也没有办法。
+成功了！因为sdd上分出去的空间不多，大部分数据都还在，赶紧备份数据。但这个pool没法恢复正常了，只能在数据备份后重建存储池。需要倒腾数据，不过也是没有办法的事情。
 
-** 教训
+** 血泪教训
 
-向ZFS池中添加磁盘和替换磁盘是个危险操作，需要清楚执行的命令的后果是什么再执行。至于attach命令是否支持对raidz追加磁盘，原来OpenZFS 2.3版才开始支持这个特性。我的OpenZFS是2.2.x版，还不支持此特性，而我看的是2.3版本的文档。好吧，这个有点伤心，不过我知道怎么去"杀死"一个ZFS存储池。
+向ZFS池中添加磁盘和替换磁盘是个危险操作，一定要在清醒时执行。至于attach命令是否支持对raidz追加磁盘，原来OpenZFS 2.3版才开始支持这个特性。我的OpenZFS是2.2.x版，还不支持此特性，而我看的是2.3版本的文档。好吧，这个有点伤心，不过我现在知道怎么去"杀死"一个ZFS存储池。
