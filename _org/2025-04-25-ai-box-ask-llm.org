@@ -1,0 +1,236 @@
+#+OPTIONS: ^:nil
+#+BEGIN_EXPORT html
+---
+layout: default
+title: AI聊天盒子 - 请AI帮我编写和AI聊天的Rust代码
+tags: [LLM, Rust, ESP32, ESP32S3]
+nav_order: {{ page.date }}
+sync_wexin: 1
+---
+#+END_EXPORT
+
+* AI聊天盒子 - 请AI帮我编写和AI聊天的Rust代码
+
+** 前言
+
+这两天都在画板子，终于画完了，今天可以写一写使用copilot的感受。本篇文章中几乎所有的新代码都是Copliot编写，我直接修改的地方只有一两处。在人类的启发下AI不仅可以写代码，还能自动解决软件项目中的问题。
+
+本系列其他文章
+1. [[https://paul356.github.io/2025/03/15/wake-word-detect.html][AI聊天盒子 - 概念设计]]
+2. [[https://paul356.github.io/2025/04/09/ai-box-esp-sr.html][AI聊天盒子 - 使用esp-sr和Rust语言编写语音识别程序]]
+
+** Prompt编程
+
+*** 工具
+我使用的是Visual Studio Code加Copliot插件来使用LLM，并且使用了最新的agent模式。通过agent模式，Copliot才可以执行编译命令，并根据编译结果自动修改代码，非常的方便。
+
+[[/images/ai-chatbox-copilot-plugin-agent.png]]
+
+*** 请AI编写代码
+我想给ai-chatbox项目添加与LLM交互的能力。我之前只用AI生成过一些代码片段，对于让AI生成一个模块，也是抱着试一试的想法。我先告诉Copilot使用ureq库帮我实现一个LLM接口组件，这个组件需要提供哪些接口。接下来我给Copilot输入了一个基于curl的例子，并且附上了接口文档的链接。然后Copliot就开始生成代码了，它分了好几步，先修改Cargo.toml，然后生成llm_intf.rs，最后修改main.rs。代码生成好了之后，它还总结了修改的内容。
+
+#+begin_src txt
+paul356: I want to use crate "ureq" to interact with deepseek api. I want to add a module called llm_intf. The related code should be put in a seperate source file. In this module I want to define a Struct called LlmHelper. It consists of following interfaces: new -> LlmHelper, send_message(this: &mut LlmHelper, text: &String, role: ChatRole) -> String, get_history(& LlmHelper) -> Vec<String>, etc. This struct accepts a text message, builds a http request using the message, sends this request to a llm server point, then parses and returns the response from the server. It also maintains the chat history in a within container. Before you make any change, let me provide you with a example of the http api with a example using curl in the next prompt.
+
+GitHub Copilot: I'll help you add a new module called `llm_intf` to interact with the DeepSeek API using the `ureq` crate. Let's wait for your example of the HTTP API using curl before implementing the code, so I can understand the API structure correctly.
+
+Could you please share the example curl command for the DeepSeek API so I can ensure the implementation matches the expected request format?
+
+paul356: This is the curl example I just talked about. There is a link to more detailed description. https://api-docs.deepseek.com/zh-cn/api/create-chat-completion
+
+curl -L -X POST 'https://api.deepseek.com/chat/completions' \
+-H 'Content-Type: application/json' \
+-H 'Accept: application/json' \
+-H 'Authorization: Bearer <TOKEN>' \
+--data-raw '{
+  "messages": [
+    {
+      "content": "You are a helpful assistant",
+      "role": "system"
+    },
+    {
+      "content": "Hi",
+      "role": "user"
+    }
+  ],
+  "model": "deepseek-chat",
+  "frequency_penalty": 0,
+  "max_tokens": 2048,
+  "presence_penalty": 0,
+  "response_format": {
+    "type": "text"
+  },
+  "stop": null,
+  "stream": false,
+  "stream_options": null,
+  "temperature": 1,
+  "top_p": 1,
+  "tools": null,
+  "tool_choice": "none",
+  "logprobs": false,
+  "top_logprobs": null
+}'
+
+
+GitHub Copilot: I'll create a new `llm_intf` module for your project that uses the `ureq` crate to interact with the DeepSeek API. Let's start by updating the dependencies in your Cargo.toml file and then creating the module.
+
+First, let's add the necessary dependencies to your project:I'll now update the Cargo.toml file to add the necessary dependencies for using the ureq HTTP library and working with JSON data:
+
+<<<修改Cargo.toml>>>
+  
+Now I'll create the `llm_intf.rs` file in the src directory to implement the `LlmHelper` struct and its methods to interact with the DeepSeek API:I've added the necessary dependencies to your Cargo.toml file and created an empty llm_intf.rs file in the src directory. Now I'll implement the `LlmHelper` struct and its methods to interact with the DeepSeek API.
+
+Let's write the code for the `llm_intf.rs` module:
+<<<生成llm_intf.rs>>>
+
+Now that I've created and implemented the `llm_intf.rs` module, we need to make sure it's properly included in your project. Let's update the `main.rs` file to import the new module:Now let's update the main.rs file to include the new `llm_intf` module:
+<<<修改main.rs>>>
+
+I've successfully added the new `llm_intf` module to your project! Let me explain what I've done:
+
+1. Added the necessary dependencies to your Cargo.toml file:
+   - `ureq` (with JSON feature) for making HTTP requests
+   - `serde` and `serde_json` for JSON serialization/deserialization
+
+2. Created the new `llm_intf.rs` file with the following components:
+
+   - `ChatRole` enum to represent different roles in a conversation (System, User, Assistant)
+   - `ChatMessage` struct to represent individual messages
+   - `LlmHelper` main struct with these methods:
+     - `new()` - Creates a new instance with the given API token and model name
+     - `send_message()` - Sends a message to the DeepSeek API and returns the response
+     - `get_history()` - Returns the conversation history
+     - `clear_history()` - Clears the conversation history but keeps system messages
+     - `configure()` - Lets you adjust parameters like max_tokens, temperature, and top_p
+
+3. Updated main.rs to include the new module with the line `mod llm_intf;`
+
+The implementation follows the DeepSeek API format from your curl example, with proper request and response structures. The module handles JSON serialization/deserialization, maintains conversation history, and provides a clean interface for interacting with the DeepSeek API.
+
+Here's a simple example of how you could use this in your code:
+<<<例子代码>>>
+
+Would you like me to make any adjustments to the implementation or explain any part in more detail?
+#+end_src
+
+Copilot完成得很快，但是它生成的代码有编译问题。这时我让Copilot尝试为我编译代码。我之前教过它如何编译ai-chatbox。通过分析编译日志，Copilot发现了一个兼容性问题。原来ureq依赖的加密库rustls并不支持esp32平台。Copilot自动帮我找了替代方案，它使用了esp-idf-svc的EspHttpConnection作为HTTP客户端。下面Copilot就开始了修改，并且学会了用编译来检验修改。大约经过了6遍迭代后，编译问题都被解决了。这个过程中我只用时不时点一下编译命令的确认按钮，剩下的就是观察Copilot的操作。
+
+#+begin_src txt
+paul356: Please try to build the new code using "cargo build". Please run "source /home/user1/export-esp.sh" if you haven't done it. But it is only requied to run once.
+
+GitHub Copilot: I'll build the new code with the added `llm_intf` module using `cargo build`. Let me check first if we need to source the environment variables file:I see that the environment variables aren't set yet, as the `$IDF_PATH` environment variable isn't defined. Let me source the export script first and then run the build:I've sourced the ESP environment variables, which are needed to build the ESP32 project. Now I'll run the cargo build command to compile the project with our new `llm_intf` module:I see there's an issue with the build. The compilation is failing due to compatibility problems with the dependencies we added. The main error is related to the `rustls` crate, which is a dependency of `ureq`. It seems there are compatibility issues between the `ring` cryptography library and the ESP32 platform.
+
+The error messages show that the `SystemRandom` type from the `ring` crate doesn't implement the required trait `ring::rand::SecureRandom` for the ESP32 target architecture (Xtensa). This is a common issue when trying to use TLS/HTTPS libraries on embedded platforms.
+
+Let's modify our approach to use a simplified HTTP client without TLS support, which would be more compatible with the ESP32 platform. We need to update the Cargo.toml and our implementation.
+
+First, let's update the dependencies in Cargo.toml:
+<<<修改Cargo.toml>>>
+
+I've updated the dependencies in your Cargo.toml file to remove the `ureq` crate which was causing compatibility issues with the ESP32 platform. The main issue was with the `ring` cryptography library that `ureq` depends on, which doesn't properly implement the required traits for the Xtensa architecture used by ESP32.
+
+Now, let's modify our `llm_intf.rs` file to use the ESP-IDF's built-in HTTP client instead, which is available through the `esp-idf-svc` crate. This approach will be more compatible with your embedded platform.
+<<<修改llm_intf.rs>>>
+
+I've updated both the Cargo.toml and `llm_intf.rs` files to better work with the ESP32 platform. Let's try building the project again with these changes:I see several errors in the build output related to the ESP-IDF HTTP client implementation. It appears that the methods we're trying to use don't match the ones available in the `esp-idf-svc` crate's HTTP client implementation. Let's fix the issues in our `llm_intf.rs` file by updating it to use the correct API methods:
+<<<修改llm_intf.rs>>>
+
+I notice there's still a potential issue in the code. I see we have both `use std::error::Error;` and `use anyhow::Result;` imported at the top, but we're only using the `anyhow::Result` type. Let me fix that and then attempt to build the project again:
+<<<修改llm_intf.rs>>>
+
+Let's continue by building the project with the updated code. I've fixed several issues in the `llm_intf.rs` file:
+
+1. Removed the unused `std::error::Error` import
+2. Fixed the HTTP client implementation to use the correct ESP-IDF methods
+3. Updated the HTTP request flow to match the ESP-IDF API
+
+Let's try building the project now:I see there are still a few issues with the HTTP client implementation. Let me fix these specific problems:
+
+1. The `Status` import is incorrect - it should be lowercase `status` module, not `Status`
+2. The `send` method doesn't exist - we need to use `write` instead
+3. The `status()` method doesn't return a `Result` type but a direct `u16` status code
+
+Let me update the `llm_intf.rs` file to fix these issues:
+<<<修改llm_intf.rs>>>
+
+I see the edit was applied, but there's still an issue with the import in `llm_intf.rs`. It's still using `Status as HttpStatus` which was causing a compilation error. Let me fix that import issue:
+<<<修改llm_intf.rs>>>
+
+Now let's try building the project again with our fixed implementation:Great news! The build has completed successfully. The warnings we're seeing are mostly related to unused code and style suggestions, but they don't prevent the project from compiling. These warnings are common in a work-in-progress project and can be addressed later if needed.
+
+I successfully implemented the `llm_intf` module that provides an interface to the DeepSeek API for your ESP32-based ai-chatbox project. Here's what we accomplished:
+
+1. Added a new module `llm_intf.rs` that implements:
+   - `ChatRole` enum to represent message roles (System, User, Assistant)
+   - `ChatMessage` struct to store individual conversation messages
+   - `LlmHelper` struct with methods to interact with the DeepSeek API
+
+2. Fixed compatibility issues:
+   - Removed the `ureq` crate that was causing compilation problems with ESP32
+   - Used ESP-IDF's built-in HTTP client which is compatible with the platform
+   - Fixed method and import issues to match the ESP-IDF API
+
+The module is now ready to be used in your main application. You can integrate it by creating an instance of `LlmHelper` in your main code and using it to send audio transcriptions to the LLM for processing and analysis.
+
+For example, when you record audio and want to send it to the DeepSeek API after transcription, you could add code like this:
+
+<<<使用新增的LlmHelper类的例子>>>
+
+Would you like me to explain any specific part of the implementation in more detail or discuss how to integrate this module with your audio recording functionality?
+#+end_src
+
+接下来我又让Copliot帮我实现通过环境变量传入SSID、WiFi密码和DeepSeek安全token的功能。修改过程和上面的类似，Copilot先修改，然后通过编译来验证。
+
+*** 抓虫
+
+代码通过了编译，但是代码是否能够正确运行呢，果然是不行的。代码有两个问题，第一个问题是代码在两个地方调用了 ~Peripherals::take()~ "，原来有一处调用，Copilot生成代码时在另一个地方再一次使用了 ~Peripherals::take()~ 。因为Peripherals是个单例，第二次调用会返回None，这个问题是我通过查看代码发现的。第二个问题我找了好久，期间我还把运行日志输入给Copilot。但我漏了与问题有关的关键日志，最后Copilot也没有定位到问题，不过它帮我加了好多辅助定位的代码。最后发现问题是EspWifi被定义成了一个帮助函数的局部变量，帮助函数返回后EspWifi被析构了，导致使用网络时WiFi又被关掉了。这两个问题都是与Rust生命周期有关的问题，可能对于Copilot管理Rust变量生命周期还有点难。解决了这两个问题后，代码就可以运行了。下面是我从esp32s3上抓取的日志，user是我的提问，assistant是DeepSeek的回答。
+
+#+begin_src txt
+I (5858) ai_chatbox::llm_intf: Sending request to DeepSeek API...
+I (5868) ai_chatbox::llm_intf: Attempting to resolve DNS for api.deepseek.com
+I (5878) ai_chatbox::llm_intf: DNS resolution successful: api.deepseek.com -> 116.205.40.120:443
+I (5888) ai_chatbox::llm_intf: Initiating HTTP request to https://api.deepseek.com/chat/completions
+I (6058) esp-x509-crt-bundle: Certificate validated
+I (6718) ai_chatbox::llm_intf: HTTP request sent successfully.
+I (6718) ai_chatbox::llm_intf: HTTP response status: 200
+I (22748) ai_chatbox::llm_intf: Response received. Tokens used: 32 (prompt) + 256 (completion) = 288 (total)
+...
+I (22838) ai_chatbox: Conversation history:
+I (22838) ai_chatbox:   [system]: You are a helpful assistant
+I (22848) ai_chatbox:   [user]: Hello! I'm testing the ESP32-S3 integration with DeepSeek AI. Can you confirm this is working?
+I (22858) ai_chatbox:   [assistant]: Hello! Yes, the ESP32-S3 can integrate with DeepSeek AI, but the implementation depends on your specific use case. Here’s how it generally works:
+
+1. **ESP32-S3 Capabilities**:  
+   - The ESP32-S3 has Wi-Fi/BLE connectivity and sufficient processing power to run lightweight AI models (TinyML) or communicate with cloud-based AI like DeepSeek.  
+   - For on-device AI, you can use TensorFlow Lite for Microcontrollers or ESP-NN (Espressif’s neural network library).  
+
+2. **DeepSeek AI Integration**:  
+   - If you're using **DeepSeek’s cloud API**, the ESP32-S3 can send HTTP/HTTPS requests (via Wi-Fi) to process AI tasks (like NLP, vision, etc.).  
+   - If you're running a **local model**, you may need to quantize & deploy it on the ESP32-S3 (limited by its memory).  
+
+### Example Workflow (Cloud API):  
+```cpp
+#include <WiFi.h>
+#include <HTTPClient.h>
+
+const char* ssid = "YourWiFi";
+const char* password = "YourPassword";
+const char* deepseekURL =
+I (22948) ai_chatbox: LLM test completed successfully
+#+end_src
+
+** 总结
+
+LLM拥有丰富的知识，远超个人能够想象的体量。如果利用好LLM，可以使我们开发过程变得非常高效。结合网上信息和个人经验，使用LLM开发代码有以下几点需要注意。
+- LLM非常善于完成适合用语言描述的开发任务，可以很快地生成新模块，高效地解决代码中的warning。在做一些较小的修改时，需要对修改的范围和要求做出明确的界定，不然LLM会去改动一些你意想不到的地方。
+- 让LLM使用编译器来检验生成的代码，可以自动纠正生成代码的语法错误。也可以让LLM自动运行测试代码，LLM可以自动解决代码中的逻辑错误。
+- 定位问题时让LLM分析日志，LLM可能会帮我们找到问题，至少可以给出一些定位思路。
+- 做好版本管理，时不时提交一下，防止修改失控，也方便回退代码。
+- 聊天的历史信息太多时，及时创建新的chat。太长的历史对话会导致LLM处理变慢，甚至会让LLM分心。
+
+本文介绍了如何使用LLM开发代码，生成的代码包含在[[https://github.com/paul356/ai-chatbox][ai-chatbox]]项目里，有兴趣的可以去看看LLM生成的代码什么样。
+
+** 链接
+
+1. ai-chatbox - https://github.com/paul356/ai-chatbox
+   

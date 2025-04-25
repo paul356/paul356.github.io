@@ -3,9 +3,9 @@
 ---
 layout: default
 title: 如何“杀死”一个ZFS Pool
-tags: [ZFS, storage]
+tags: [ZFS, Storage]
 nav_order: {{ page.date }}
-sync_wexin: 0
+sync_wexin: 1
 ---
 #+END_EXPORT
 
