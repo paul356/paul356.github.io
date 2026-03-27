@@ -78,11 +78,13 @@ def cache_get(key):
 
 def file_digest(file_path):
     """
-    计算文件的md5值
+    计算文件的 sha1 值（兼容旧版 Python）
     """
+    h = hashlib.sha1()
     with open(file_path, "rb") as f:
-        md5 = hashlib.file_digest(f, "sha1")
-        return md5.hexdigest()
+        for chunk in iter(lambda: f.read(8192), b''):
+            h.update(chunk)
+    return h.hexdigest()
 
 def cache_update(file_path):
     digest = file_digest(file_path)
