@@ -22,6 +22,7 @@ from werobot import WeRoBot
 import requests
 import json
 import urllib.request
+import urllib.parse
 import random
 import string
 import re
@@ -138,6 +139,62 @@ def get_images_from_markdown(content):
             line_str = line_str[match.span()[1]:]
             match = re.search(r"!\[\w*\]\(([^)]*)\)", line_str)
     return images
+
+def get_article_links_from_markdown(content):
+    lines = content.split('\n')
+    links = []
+    for line in lines:
+        line_str = line.strip()
+        match = re.search(r"(?<!!)\[[^\]]*\]\((https?://paul356\.github\.io[^)]*)\)", line_str)
+        while match:
+            links.append(match.group(1))  # add matched article link
+            line_str = line_str[match.span()[1]:]
+            match = re.search(r"(?<!!)\[[^\]]*\]\((https?://paul356\.github\.io[^)]*)\)", line_str)
+    return links
+
+def get_post_title_for_url(url, post_folder):
+    """
+    Given a paul356.github.io URL, find the matching post file and return its title.
+    URL format: https://paul356.github.io/YYYY/MM/DD/slug.html
+    Post file:  _posts/YYYY-MM-DD-slug.md
+    """
+    path = urllib.parse.urlparse(url).path  # e.g. /2024/10/31/mobile-storage.html
+    parts = [p for p in path.split('/') if p]  # ['2024', '10', '31', 'mobile-storage.html']
+    if len(parts) < 4:
+        return None
+    slug = parts[-1].replace('.html', '')
+    year, month, day = parts[0], parts[1], parts[2]
+    filename = "{}-{}-{}-{}.md".format(year, month, day, slug)
+    post_path = os.path.join(post_folder, filename)
+    if not os.path.exists(post_path):
+        # try globbing in case of minor filename differences
+        candidates = list(Path(post_folder).glob("*-{}.md".format(slug)))
+        if not candidates:
+            return None
+        post_path = str(candidates[0])
+    content = open(post_path, 'r').read()
+    title = fetch_attr(content, 'title').strip().strip('"').strip("'")
+    return title if title else None
+
+def update_article_links(content, article_map, post_folder):
+    links = get_article_links_from_markdown(content)
+    for url in links:
+        title = get_post_title_for_url(url, post_folder)
+        if title and title in article_map:
+            wechat_url = article_map[title]
+            orig = "({})".format(url)
+            new = "({})".format(wechat_url)
+            print("{} -> {}".format(orig, new))
+            content = content.replace(orig, new)
+        else:
+            print("no wechat url found for: {}".format(url))
+    return content
+
+def load_article_map(json_file):
+    if not os.path.exists(json_file):
+        return {}
+    with open(json_file, 'r', encoding='utf-8') as f:
+        return json.load(f)
 
 def fetch_attr(content, key):
     """
@@ -335,7 +392,7 @@ def upload_images_and_update(content):
     # substitute image links
     return update_images_urls(content, image_urls)
 
-def process_posts(post_folder):
+def process_posts(post_folder, article_map):
     print(post_folder)
     pathlist = Path(post_folder).glob('*.md')
     for path in pathlist:
@@ -345,6 +402,7 @@ def process_posts(post_folder):
         if sync_wexin != "":
             print(path_str)
             new_content = upload_images_and_update(content)
+            new_content = update_article_links(new_content, article_map, post_folder)
             with open("_wexin/{}".format(path.name), "wb") as new_file:
                 new_file.write(new_content.encode());
 
@@ -356,7 +414,8 @@ if __name__ == '__main__':
     print("begin sync to wechat")
     init_cache()
     start_time = time.time() # 开始时间
-    process_posts("_posts/")
+    article_map = load_article_map("article_links.json")
+    print("loaded {} article links".format(len(article_map)))
+    process_posts("_posts/", article_map)
     end_time = time.time() #结束时间
     print("程序耗时%f秒." % (end_time - start_time))
-    print(CACHE)
