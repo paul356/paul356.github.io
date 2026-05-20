@@ -32,6 +32,8 @@ sync_wexin: 1
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 #+END_SRC
 
+[[/images/kicad-plugin-install-uv-win.png]]
+
 安装完成后，关闭并重新打开 PowerShell，执行下面的命令验证安装是否成功：
 
 #+BEGIN_SRC powershell
@@ -75,42 +77,24 @@ cd "$env:USERPROFILE\Documents\KiCad\10.0\scripting\plugins\kicad_ai_assistant"
 2. 将 kicad-mcp 以可编辑模式安装到虚拟环境中；
 3. 从 GitHub 下载 freerouting JAR 文件（用于自动布线功能）。
 
-脚本输出如下时表示安装成功：
-
-#+BEGIN_EXAMPLE
-Done! The plugin venv is ready at:
-  ...\kicad_ai_assistant\.venv\Scripts\python.exe
-
-Restart KiCad (or reload the plugin) for the changes to take effect.
-#+END_EXAMPLE
+[[/images/kicad-plugin-config-plugin-win.png]]
 
 ** 配置插件
 
 安装完成后，打开 KiCad，在 PCB 编辑器的 *Tools* 菜单中找到并启动 *Kicad AI Assistant* 插件。
 
-[[/images/kicad-plugin-open-plugin.png]]
+[[/images/kicad-plugin-open-plugin-win.png]]
 
 初次使用需要配置大模型参数。点击插件界面中的 *Options → Settings* 打开设置对话框，填写以下信息：
 
 - *LLM Provider*：选择 ~openai~ 、 ~anthropic~ 或 ~custom~
 - *API Key*：对应服务的 API Key
-- *Model*：模型名称，例如 ~gpt-4o~ 或其他兼容模型
+- *Model*：模型名称，例如 ~deepseek-v4-pro~ 或其他兼容模型
 - *Custom endpoint URL*：自定义服务地址（使用兼容 OpenAI 协议的第三方节点时填写）
 
-[[/images/kicad-plugin-setting-interface.png]]
+[[/images/kicad-plugin-setting-interface-win.png]]
 
-设置对话框还提供了上下文窗口相关参数，可根据所使用模型的规格进行调整：
-
-| 参数 | 默认值 | 说明 |
-|------+--------+------|
-| Context window (tokens) | 128000 | 模型的上下文窗口大小（token数），需与所选模型的规格匹配 |
-| Compaction threshold | 0.70 | 当估算的上下文使用量超过该比例时触发历史压缩 |
-| Compaction target | 0.49 | 压缩后的目标占用比例，必须小于 Compaction threshold |
-| Recent turns to keep | 4 | 压缩时保留最近完整对话轮数 |
-
-如果使用上下文窗口较小的模型（例如 32k 以下），建议将 *Context window* 调低以避免超限报错。
-
-配置会保存到 ~%APPDATA%\kicad\kicad_ai_assistant.json~ （KiCad 用户配置目录），下次启动无需重新填写。
+设置对话框还提供了上下文窗口相关参数，可根据所使用模型的规格进行调整。
 
 ** 使用方法
 
