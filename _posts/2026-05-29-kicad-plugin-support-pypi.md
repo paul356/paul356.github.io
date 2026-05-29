@@ -102,6 +102,29 @@ cd "$env:USERPROFILE\Documents\KiCad\10.0\scripting\plugins\kicad_ai_assistant"
 与旧版不同，\*无需下载源码包\*，也\*无需手动传入路径参数\*。如果 KiCad 安装在非默认路径（如 Windows 上的 `D:\KiCad` ），脚本会提示手动输入正确的路径。
 
 
+### 从旧版迁移用户数据
+
+如果之前安装过旧版插件（v1.x），可以将配置文件与历史会话迁移到新版目录，恢复之前的设置和对话记录。
+
+旧版数据位于：
+
+-   Linux： `/.config/kicad/` 目录下的 `kicad_ai_assistant.json` 和 =kicad\_ai\_sessions=~
+-   Windows： `%APPDATA%\Roaming\kicad` 目录下的 `kicad_ai_assistant.json` 和 =kicad\_ai\_sessions=~
+
+将其复制到新版数据目录即可：
+
+-   Linux： `/.config/kicad/10.0/kcaa/`
+-   Windows： `%APPDATA%\Roaming\kicad\10.0\kcaa\`
+
+Linux 示例：
+
+```bash
+mkdir -p ~/.config/kicad/10.0/kcaa
+cp ~/.config/kicad/kicad_ai_assistant.json ~/.config/kicad/10.0/kcaa/
+cp -r ~/.config/kicad/kicad_ai_sessions ~/.config/kicad/10.0/kcaa/ 2>/dev/null
+```
+
+
 ### Windows 兼容性改进
 
 新版本针对 Windows 平台做了以下兼容性修复：
@@ -110,7 +133,7 @@ cd "$env:USERPROFILE\Documents\KiCad\10.0\scripting\plugins\kicad_ai_assistant"
 2.  \*文件系统分隔符问题\*：统一使用正斜杠（ `/` ）处理路径，避免反斜杠（ `\` ）在 Python 字符串和配置文件中被转义。
 3.  \*KiCad 安装目录问题\*：安装脚本自动检测 KiCad 安装路径，并允许用户在非默认路径下手动指定，不再硬编码单一路径。
 
-这些修复让 Windows 用户可以获得与 Linux 一致的使用体验。
+这些修复解决了 Windows 上调用符号表相关工具失败的问题。
 
 
 ## 独立 MCP 服务器
