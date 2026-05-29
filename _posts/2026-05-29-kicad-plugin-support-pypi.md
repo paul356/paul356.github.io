@@ -58,10 +58,10 @@ uv --version
 
 ### 第二步：下载并解压插件包
 
-从 [Releases 页面](https://github.com/paul356/KiCad-AI-Assistant/releases) 下载 ~kicad-ai-assistant.zip~，解压到 KiCad 插件目录：
+从 [Releases 页面](https://github.com/paul356/KiCad-AI-Assistant/releases) 下载 `kicad-ai-assistant.zip` ，解压到 KiCad 插件目录：
 
--   Linux：~/.local/share/kicad/10.0/scripting/plugins~
--   Windows：~%USERPROFILE%\Documents\KiCad\\10.0\scripting\plugins~
+-   Linux： `/.local/share/kicad/10.0/scripting/plugins`
+-   Windows： `%USERPROFILE%\Documents\KiCad\10.0\scripting\plugins`
 
 解压后目录结构如下：
 
@@ -94,7 +94,7 @@ cd "$env:USERPROFILE\Documents\KiCad\10.0\scripting\plugins\kicad_ai_assistant"
 
 安装脚本会自动完成以下操作：
 
-1.  创建 Python 虚拟环境（~.venv~）；
+1.  创建 Python 虚拟环境（ `.venv` ）；
 2.  从 [PyPI](https://pypi.org/project/kcaa/) 安装 `kcaa` 包；
 3.  自动检测 KiCad 版本和安装路径，生成 `.env` 配置文件；
 4.  下载 freerouting JAR 文件（用于自动布线功能）。
