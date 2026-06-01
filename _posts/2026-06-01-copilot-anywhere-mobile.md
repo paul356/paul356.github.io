@@ -1,13 +1,13 @@
 ---
 layout: default
-title: 通过 copilot-anywhere(max) 在手机上使用 Copilot
+title: 如何在手机上用 Github Copilot CLI 开发代码
 tags: [Copilot, max, Feishu, mobile, LLM]
 nav_order: {{ page.date }}
 sync_wexin: 1
 ---
 
 
-# 通过 copilot-anywhere(max) 在手机上使用 Copilot
+# 如何在手机上用 Github Copilot CLI 开发代码
 
 
 ## 前言
@@ -42,7 +42,7 @@ $ copilot
 ![img](/images/copilot-cli-verify.png)
 
 
-## 使用 `copilot-anywhere(max)`
+## 使用 copilot-anywhere(max)
 
 
 ### 第一步：编译安装 copilot-anywhere(max)
