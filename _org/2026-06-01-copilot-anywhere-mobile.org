@@ -1,0 +1,122 @@
+#+OPTIONS: ^:nil
+#+BEGIN_EXPORT html
+---
+layout: default
+title: 通过 copilot-anywhere(max) 在手机上使用 Copilot
+tags: [Copilot, max, Feishu, mobile, LLM]
+nav_order: {{ page.date }}
+sync_wexin: 1
+---
+#+END_EXPORT
+
+* 通过 copilot-anywhere(max) 在手机上使用 Copilot
+
+** 前言
+
+使用 LLM 开发代码非常好玩，但久坐非常不健康，有没有办法不用守着电脑，还能同时开发代码呢。为了实现这个愿望，我开发了 =copilot-anywhere(max)= 。这个项目可以允许你通过手机消息工具（如飞书）直接控制电脑上的 Copilot CLI。感兴趣了么？让我们看看如何通过手机来玩转 Copilot CLI 吧。
+
+[[/images/copilot-through-feishu.jpg]]
+
+** 准备工作
+
+1. GitHub 账户。
+2. 安装 GitHub Copilot CLI。
+   - 使用命令 ~curl -fsSL https://gh.io/copilot-install | bash~ 安装 GitHub Copilot CLI。
+3. 深度求索 / 千问 / 其他大语言模型服务
+4. 创建飞书机器人，与 OpenClaw 创建机器人的流程一致。飞书网站有详细的教程，参见文末参考链接。
+
+
+完成上面的准备工作后，先验证 Copilot CLI 能否正常工作。这里展示如何在 Copilot CLI 中使用 DeepSeek 模型，配置其他大模型服务只需更换端点和 API Key。如果你订阅了Copilot Pro以上的编程计划，可以直接使用包含的模型服务，不用执行 export 命令。
+
+在 Linux 或 Mac OS 上输入下面的命令，就可以了。
+
+#+BEGIN_SRC bash
+$ export COPILOT_PROVIDER_BASE_URL=https://api.deepseek.com/anthropic
+$ export COPILOT_PROVIDER_TYPE=anthropic
+$ export COPILOT_PROVIDER_API_KEY=<YOUR API KEY>
+$ export COPILOT_MODEL=deepseek-v4-pro
+$ copilot
+#+END_SRC
+
+第一次打开 Copilot 需登录 GitHub 账户才能开始使用 Copilot CLI。在 Copilot CLI 中跟 LLM 打个招呼，看大模型服务是否正常。
+
+[[/images/copilot-cli-verify.png]]
+
+** 使用 =copilot-anywhere(max)=
+
+*** 第一步：编译安装 copilot-anywhere(max)
+
+确保本机已经安装 Node.js（建议 LTS）与 GitHub Copilot CLI。目前 copilot-anywhere 尚未发布到 npm，需从源码编译安装。
+
+从 ~https://github.com/paul356/copilot-anywhere~ 下载最新代码，切换到 =copilot-anywhere= 源码目录后执行：
+
+#+BEGIN_SRC bash
+npm run build
+npm install -g .
+#+END_SRC
+
+*** 第二步：配置 copilot-anywhere(max)
+
+执行：
+
+#+BEGIN_SRC bash
+max setup
+#+END_SRC
+
+向导会引导你完成基础配置，重点包括：
+
+1. Copilot 登录与模型设置；
+2. 手机通道配置（选择飞书）；
+
+飞书机器人需要提前在飞书开放平台创建，并获取 App ID、App Secret 等信息。具体创建步骤可参考 openclaw 配置飞书机器人的方法（见文末参考链接）。
+
+*** 第三步：启动服务
+
+在电脑上启动 max 守护进程，如果你使用自己的大语言模型服务，需要先配置以下环境变量：
+
+#+BEGIN_SRC bash
+export COPILOT_PROVIDER_BASE_URL=https://api.deepseek.com/anthropic
+export COPILOT_PROVIDER_TYPE=anthropic
+export COPILOT_PROVIDER_API_KEY=<YOUR API KEY>
+export COPILOT_MODEL=deepseek-v4-pro
+max start
+#+END_SRC
+
+[[/images/copilot-anywhere-daemon-start.png]]
+
+现在就可以打开手机飞书来操作电脑了。
+
+*** 第四步：手机端接入
+
+在手机飞书中找到你配置好的自建机器人，发送一条消息（如"你好"），先输入 max 守护进程打印的配对码，配对成功后就可以指导 Copilot 干活了。
+
+[[/images/copilot-anywhere-feishu-pairing.jpg]]
+
+** 手机上怎么使用 Copilot CLI
+
+max 是一个转发工具，所以电脑上怎么使用 Copilot CLI，手机上也就怎么使用 Copilot CLI。
+
+为了支持在不同项目之间切换，max 增加了 *工作区（workspace）* 的概念。一个工作区对应一个项目目录，可以隔离不同项目的上下文。工作区相关的命令如下：
+
+#+BEGIN_EXAMPLE
+/max:ws new <name> <path>    # 创建并绑定一个工作目录
+/max:ws list                 # 列出所有工作区
+/max:ws switch <name>        # 切换到指定工作区
+#+END_EXAMPLE
+
+切换工作区后，后续对话都会在该目录下进行，和在终端里 =cd= 到项目目录的效果一样。如果需要查看其他命令，可以输入 ~/max:help~ 查看 max 的命令，输入 ~/help~ 查看 Copilot CLI 的帮助。
+
+** 总结
+
+=copilot-anywhere(max)= 延伸了 Copilot CLI 的访问范围。不需要再守着电脑，可以利用碎片时间随时随地开发软件，还有什么理由不出去走走。
+
+#+BEGIN_QUOTE
+*重要安全提示*：max 拥有对系统上任意文件的读取和操作能力。请务必确保飞书机器人只对你本人开放，不要将机器人加入公开群组或分享给他人，以防止未授权访问。
+#+END_QUOTE
+
+** 参考链接
+
+1. copilot-anywhere 项目 - https://github.com/paul356/copilot-anywhere
+2. Copilot CLI - https://github.com/features/copilot/cli
+3. openclaw 配置飞书机器人方法 - https://www.feishu.cn/content/425524486655
+4. 飞书开放平台 - https://open.feishu.cn/
