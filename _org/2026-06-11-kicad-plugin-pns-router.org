@@ -1,0 +1,64 @@
+#+OPTIONS: ^:nil
+#+BEGIN_EXPORT html
+---
+layout: default
+title: 基于KiCad的大语言模型插件(Agent) — 支持 PNS 避障布线
+tags: [KiCad, MCP, plugin, Router, Via, PNS, Ollama]
+nav_order: 2026-07-29
+sync_wexin: 1
+---
+#+END_EXPORT
+
+* 基于KiCad的大语言模型插件(Agent) — 支持 PNS 避障布线
+
+** 前言
+
+最近在给朋友帮忙，所以空闲时间比较少，导致这次更新的间隔有点长。今天终于完成了 MCP 布线工具，LLM 现在可以调用布线工具单独添加一条 PCB 线路。对于这个功能我一开始还比较犹豫，因为人工画一根线似乎也不是很麻烦。不过从完整度考虑， LLM 还是需要这个能力。当前支持单层中的线路，很快会支持跨层布线。布线的场景比较复杂，虽然我测试了一些场景，但是肯定有想不到的场景，所以还希望大家能够反馈使用中遇到的问题。
+
+本系列相关文章：
+
+1. [[https://paul356.github.io/2026/04/09/kicad-mcp.html][如何使用LLM直接修改KiCad原理图]]
+2. [[https://paul356.github.io/2026/04/24/kicad-plugin.html][基于KiCad的大语言模型插件(Agent)]]
+3. [[https://paul356.github.io/2026/05/08/kicad-plugin-pcb.html][基于KiCad的大语言模型插件(Agent) - 支持编辑PCB]]
+4. [[https://paul356.github.io/2026/05/11/kicad-plugin-autoroute.html][基于KiCad的大语言模型插件(Agent) - 支持自动布线]]
+5. [[https://paul356.github.io/2026/05/20/kicad-plugin-windows.html][基于KiCad的大语言模型插件(Agent) - Windows平台安装指南]]
+6. [[https://paul356.github.io/2026/05/26/kicad-plugin-hang-issue.html][基于KiCad的大语言模型插件(Agent) — 解决Windows版本卡死问题]]
+7. [[https://paul356.github.io/2026/05/29/kicad-plugin-support-pypi.html][基于KiCad的大语言模型插件(Agent) — 简化安装方法]]
+8. [[https://paul356.github.io/2026/06/05/kicad-plugin-feature-update.html][基于KiCad的大语言模型插件(Agent) — 特性更新：Skills、嵌套电路编辑及更多]]
+9. [[https://paul356.github.io/2026/06/11/kicad-plugin-drc-freeroute.html][基于KiCad的大语言模型插件(Agent) — DRC设计规则与自动布线联动]]
+
+** 更新范围
+
+本次更新（v0.1.8）合并了以下变更：
+
+- PNS 避障路由器：内置点到点布线引擎（当前支持单层，多层规划中）
+- PCB 查询工具增强
+- 支持 Ollama 本地 LLM
+- 修复了一些网友发现的问题
+  - KIPRJMOD 环境变量被清空的问题
+  - 无法设置 Anthropic 兼容服务地址的问题
+  - 更新了 Readme 中不准确的地方
+
+** 新增MCP 工具列表
+
+| 工具 | 作用 |
+|------|------|
+| ~pcb_route_pad_to_pad~ | 点到点避障布线（单层） |
+| ~pcb_add_vias~ | 批量加过孔，写入前做 netclass + DRC 预检查 |
+| ~pcb_delete_tracks~ | 按坐标删除走线段 |
+| ~pcb_delete_vias~ | 按位置删除过孔 |
+| ~list_tracks~ | 按 trace 连通性分组列出走线（新增） |
+| ~list_vias~ | 列出板上所有过孔（新增） |
+
+** 结语
+
+这次更新进一步补全了 LLM 操作 KiCad 的能力，虽然当前 AI 还比较傻，但是手脚还是要给它配全，就等大脑变强了。由于个人经验原因，肯定有很多考虑不全的地方，希望大家多提意见、 Issue 和 PR，也欢迎加入技术交流群交流意见。
+
+[[/images/kicad-plugin-wexin-group-chat3.png]]
+
+** 参考
+
+- 代码仓库：https://github.com/paul356/KiCad-AI-Assistant
+- PyPI 包：https://pypi.org/project/kcaa/
+- PCB 布线指南：https://github.com/paul356/KiCad-AI-Assistant/blob/main/docs/pcb-routing.md
+- PNS 多层布线设计：https://github.com/paul356/KiCad-AI-Assistant/blob/main/docs/pns-multi-layer-design.md

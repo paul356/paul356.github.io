@@ -1,0 +1,157 @@
+#+OPTIONS: ^:nil
+#+BEGIN_EXPORT html
+---
+layout: default
+title: 基于KiCad的大语言模型插件(Agent) — DRC设计规则与自动布线联动
+tags: [KiCad, MCP, plugin, DRC, 设计规则, freerouting]
+nav_order: 2026-06-11
+sync_wexin: 1
+---
+#+END_EXPORT
+
+* 基于KiCad的大语言模型插件(Agent) — DRC设计规则与自动布线联动
+
+本系列相关文章：
+
+1. [[https://paul356.github.io/2026/04/09/kicad-mcp.html][如何使用LLM直接修改KiCad原理图]]
+2. [[https://paul356.github.io/2026/04/24/kicad-plugin.html][基于KiCad的大语言模型插件(Agent)]]
+3. [[https://paul356.github.io/2026/05/08/kicad-plugin-pcb.html][基于KiCad的大语言模型插件(Agent) - 支持编辑PCB]]
+4. [[https://paul356.github.io/2026/05/11/kicad-plugin-autoroute.html][基于KiCad的大语言模型插件(Agent) - 支持自动布线]]
+5. [[https://paul356.github.io/2026/05/20/kicad-plugin-windows.html][基于KiCad的大语言模型插件(Agent) - Windows平台安装指南]]
+6. [[https://paul356.github.io/2026/05/26/kicad-plugin-hang-issue.html][基于KiCad的大语言模型插件(Agent) — 解决Windows版本卡死问题]]
+7. [[https://paul356.github.io/2026/05/29/kicad-plugin-support-pypi.html][基于KiCad的大语言模型插件(Agent) — 简化安装方法]]
+8. [[https://paul356.github.io/2026/06/05/kicad-plugin-feature-update.html][基于KiCad的大语言模型插件(Agent) — 特性更新：Skills、嵌套电路编辑及更多]]
+
+** 前言
+
+设计 PCB 时，我们往往需要根据厂家工艺和设计需求不断调整 DRC 规范——比如电源网络要加粗走线、高速信号要严格控制间距。以前这些规则需要在 KiCad 的 Board Setup 里手动设置，改来改去挺繁琐的，尤其当你有好几个网络类需要分别设规则的时候。
+
+本次更新（v0.1.6）补齐了通过大语言模型调整 DRC 规范的能力。你可以在插件里用自然语言设定线宽、间距、过孔大小等规则，这些约束会被写入 KiCad 的设计规则文件。通过PCB编辑器的 DRC 规范检查功能可以检查当前电路中违反这些规范的地方。
+
+另外在自动布线时，插件将当前 PCB（含最新规则）导出为 DSN 文件，freerouting 从 DSN 中读取规则，布线时直接按照你设定的约束来走线。
+
+下面具体看看怎么用。
+
+** 1. 轻松修改规则
+
+以前在 KiCad 里改设计规则，你得打开 Board Setup，在 Design Rules、Net Classes、Custom Rules 几个面板之间来回切换。现在直接用自然语言告诉 AI。
+
+*** 改全局规则
+
+比如你找厂家要了工艺参数，发现板子默认的最小间距太小了：
+
+#+BEGIN_EXAMPLE
+帮我把最小间距改成 0.2mm，最小线宽改成 0.25mm。
+#+END_EXAMPLE
+
+AI 只改你指定的字段，其他规则不变。修改前会自动备份 ~.kicad_pcb~ 文件，改错了随时恢复。
+
+*** 给电源网络单独设规则
+
+电源线需要走粗一点，信号线走细一点，这是最常见的需求。直接告诉 AI：
+
+#+BEGIN_EXAMPLE
+创建一个叫"Power"的网络类，线宽 0.5mm，间距 0.6mm。然后把 VBUS、VCC_SYS、+3V3 这几个网络加进去。
+#+END_EXAMPLE
+
+[[/images/kicad-plugin-drc-net-classes.png]]
+
+AI 会自动创建网络类（如果不存在就基于 Default 生成）、设置参数、然后把网络分配进去。如果以后想调整：
+
+#+BEGIN_EXAMPLE
+把 Power 网络类的间距从 0.6mm 改到 0.8mm。
+#+END_EXAMPLE
+
+或者把某个网络移出去：
+
+#+BEGIN_EXAMPLE
+把 +3V3 从 Power 网络类移出去。
+#+END_EXAMPLE
+
+*** 加一条自定义条件规则
+
+有些需求比较特殊，比如"所有顶层走线额外加 0.1mm 间距"。这种条件规则在 KiCad 里需要用 Lisp 风格的 DSL 来写，语法挺抽象的。现在你只管描述需求，AI 帮你翻译：
+
+#+BEGIN_EXAMPLE
+给顶层的所有铜箔对象额外加 0.1mm 间距，设为警告级别。
+#+END_EXAMPLE
+
+AI 会生成条件 ~"A.Layer == 'F.Cu'"~，约束类型 ~clearance~，值 0.1mm。
+
+[[/images/kicad-plugin-drc-chat-rules.png]]
+
+** 2. 布线时自动生效
+
+这是本次更新最重要的变化。规则通过 AI 改完之后直接写入文件。重新打开项目后，KiCad 加载最新规则，此时启动自动布线，插件调用 ~ExportSpecctraDSN~ 将当前 PCB 导出为 DSN 文件——因为 DRC 规则已经更新到板子文件里了，导出的 DSN 自然包含最新的约束参数。freerouting 读取 DSN 中的 ~(rule ...)~ 段落后，直接按你设定的间距和线宽来布线。布线完成后，插件自动跑一遍 DRC，对比布线前后的违规数量，如有新增会在对话里提醒你。
+
+整个过程不需要手动导出、不需要额外传参数——你只管用自然语言改规则，布线时自动生效，布完自动验证。
+
+需要注意：修改 DRC 规则后，KiCad 不会在运行时自动加载最新内容。建议关掉项目再重新打开，否则 KiCad 读到的还是旧规则，布线结果也不会反映你的修改。
+
+[[/images/kicad-plugin-drc-autoroute-rules.png]]
+
+** 3. DRC 工具一览
+
+这次新增了 9 个 DRC 相关工具，列个表供参考。不用记，需要的时候直接跟 AI 说就行。
+
+| 工具 | 作用 | 一句话用法 |
+|------|------|-----------|
+| ~get_effective_design_rules~ | 查看全部设计规则 | "帮我看看这块板子的设计规则" |
+| ~set_design_rules~ | 修改全局最小规则 | "把最小间距改到 0.2mm" |
+| ~set_net_class_rules~ | 创建或修改网络类 | "把 Power 类的线宽改成 0.5mm" |
+| ~assign_nets_to_class~ | 把网络分配到网络类 | "把 VBUS 加到 Power 网络类" |
+| ~remove_nets_from_class~ | 把网络移出网络类 | "把 +3V3 从 Power 类移出去" |
+| ~delete_net_class~ | 删除网络类 | "把 Power 网络类删掉" |
+| ~add_custom_rule~ | 添加自定义条件规则 | "给 HV 网络类加 1mm 额外间距" |
+| ~del_custom_rule~ | 删除自定义规则 | "把 HV clearance 那条规则删掉" |
+| ~run_drc_check~ | 打开 DRC 检查器 | "帮我跑一下 DRC 检查" |
+
+所有修改操作都会在写入前自动创建 ~.bak~ 备份文件，不用担心改错。
+
+** 4. 如何升级
+
+*** 第一步：下载插件包
+
+从 [[https://github.com/paul356/KiCad-AI-Assistant/releases][Releases 页面]] 下载最新版 ~kicad-ai-assistant.zip~ ，解压到 KiCad 插件目录：
+
+- Linux： ~/.local/share/kicad/10.0/scripting/plugins~
+- Windows: ~%USERPROFILE%\Documents\KiCad\10.0\scripting\plugins~
+
+*** 第二步：运行安装脚本
+
+进入插件目录，执行对应平台的安装脚本：
+
+Linux：
+
+#+BEGIN_SRC bash
+cd ~/.local/share/kicad/10.0/scripting/plugins/kicad_ai_assistant
+./setup_plugin.sh
+#+END_SRC
+
+Windows（PowerShell）：
+
+#+BEGIN_SRC powershell
+cd "$env:USERPROFILE\Documents\KiCad\10.0\scripting\plugins\kicad_ai_assistant"
+.\setup_plugin.bat
+#+END_SRC
+
+安装脚本会自动从 PyPI 安装最新版 ~kcaa~ 包。如果你在国内网络环境下安装， ~pip~ 默认的国内镜像可能尚未同步 v0.1.6，可以设置环境变量指定 PyPI 官方源：
+
+#+BEGIN_SRC bash
+PIP_INDEX_URL=https://pypi.org/simple/ ./setup_plugin.sh
+#+END_SRC
+
+如果你之前安装的是 kicad-mcp 仓库的旧版插件，请参考 [[https://paul356.github.io/2026/05/29/kicad-plugin-support-pypi.html][简化安装方法]] 一文完成数据迁移。
+
+** 结语
+
+这次更新的主线很清楚：让你用自然语言管理 DRC 规则，修改后的规则通过 DSN 导出自动传递给 freerouting，布线完成后自动验证。欢迎在 GitHub 提交 Issue 或 PR，也欢迎加入技术交流群反馈意见。
+
+[[/images/kicad-plugin-wexin-group-chat2.png]]
+
+** 参考
+
+- 代码仓库：https://github.com/paul356/KiCad-AI-Assistant
+- PyPI 包：https://pypi.org/project/kcaa/
+- DRC Skill 文件：https://github.com/paul356/KiCad-AI-Assistant/blob/main/kicad_plugin/skills/drc_rules.md
+- DRC IPC 设计文档：https://github.com/paul356/KiCad-AI-Assistant/blob/main/docs/drc-ipc-design.md
