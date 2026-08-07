@@ -1,0 +1,79 @@
+>#+OPTIONS: ^:nil
+#+BEGIN_EXPORT html
+---
+layout: default
+title: 基于KiCad的大语言模型插件(Agent) — 支持 Vision 模型与 PDF 文本提取
+tags: [KiCad, MCP, plugin, Vision, PDF, Multi-layer, Retry]
+nav_order: 2026-08-07
+sync_wexin: 1
+---
+#+END_EXPORT
+
+* 基于KiCad的大语言模型插件(Agent) — 支持 Vision 模型与 PDF 文本提取
+
+** 前言
+
+本次更新（v0.1.9）主要补全了两块能力：一是支持 Vision 视觉模型，现在可以直接把图片拖进对话框发给 LLM；二是支持 PDF 文本提取，上传 PDF 后自动提取文本内容。此外，自动布线工具 ~pcb_route_pad_to_pad~ 正式支持多层布线，可以在不同铜层之间通过过孔连接。另外还解决了插件遇到 LLM 临时错误时没有重试的问题，减少因服务端波动导致的对话中断。
+
+本系列相关文章：
+
+1. [[https://paul356.github.io/2026/04/09/kicad-mcp.html][如何使用LLM直接修改KiCad原理图]]
+2. [[https://paul356.github.io/2026/04/24/kicad-plugin.html][基于KiCad的大语言模型插件(Agent)]]
+3. [[https://paul356.github.io/2026/05/08/kicad-plugin-pcb.html][基于KiCad的大语言模型插件(Agent) - 支持编辑PCB]]
+4. [[https://paul356.github.io/2026/05/11/kicad-plugin-autoroute.html][基于KiCad的大语言模型插件(Agent) - 支持自动布线]]
+5. [[https://paul356.github.io/2026/05/20/kicad-plugin-windows.html][基于KiCad的大语言模型插件(Agent) - Windows平台安装指南]]
+6. [[https://paul356.github.io/2026/05/26/kicad-plugin-hang-issue.html][基于KiCad的大语言模型插件(Agent) — 解决Windows版本卡死问题]]
+7. [[https://paul356.github.io/2026/05/29/kicad-plugin-support-pypi.html][基于KiCad的大语言模型插件(Agent) — 简化安装方法]]
+8. [[https://paul356.github.io/2026/06/05/kicad-plugin-feature-update.html][基于KiCad的大语言模型插件(Agent) — 特性更新：Skills、嵌套电路编辑及更多]]
+9. [[https://paul356.github.io/2026/06/11/kicad-plugin-drc-freeroute.html][基于KiCad的大语言模型插件(Agent) — DRC设计规则与自动布线联动]]
+10. [[https://paul356.github.io/2026/07/29/kicad-plugin-pns-router.html][基于KiCad的大语言模型插件(Agent) — 支持 PNS 避障布线]]
+
+** 更新范围
+
+本次更新（v0.1.9）合并了以下变更：
+
+- 统一文件附件：支持图片和 PDF 的拖拽上传，PDF 提取文本后以可折叠方式显示，丰富了多模态功能的日志信息
+- 多层布线： ~pcb_route_pad_to_pad~ 支持跨层布线，在不同铜层间自动插入过孔
+- LLM 调用重试：遇到 ~503~ 、 ~429~ 、 ~502~ 等临时服务器错误时自动重试，采用随机抖动延迟，提高重试成功率
+- 版本号升级至 ~0.1.9~
+
+** 功能详解
+
+*** Vision 模型支持
+
+在设置对话框中新增了 "Model supports vision" 选项。如果要使用支持视觉的模型，请在设置模型名的时候选中该勾选框，告诉插件当前模型支持视觉。
+
+[[/images/kicad-plugin-check-vision-flag.png]]
+
+启用后，可以在对话中直接附加图片发送给支持视觉模态的 LLM （如 ~qwen3.8-max~ 等）。图片以 base64 编码的 ~image_url~ 格式随消息一起发送。
+
+[[/images/kicad-plugin-upload-image-example.png]]
+
+*** PDF 文本提取
+
+上传 PDF 后，插件会在后台调用 PyMuPDF 逐页提取文本，每页内容前缀 ~[P1]~ 、 ~[P2]~ 等页码标记，方便 LLM 引用具体页面。提取完成后，文本以可折叠区块的形式显示在对话界面中。
+
+[[/images/kicad-plugin-upload-pdf-example.png]]
+
+如果是从旧版本升级到 ~0.1.9~ 版本，需要重新运行 ~setup_plugin~ 脚本安装 PyMuPDF ，才能支持 PDF 提取。 ~setup_plugin~ 使用方法可参考本系列文章的[[https://paul356.github.io/2026/05/29/kicad-plugin-support-pypi.html][基于KiCad的大语言模型插件(Agent) — 简化安装方法]]。 PDF 提取在独立子进程中运行，超时时间 60 秒，最多提取 50 页。如果 PyMuPDF 未安装，会返回错误。
+
+*** 多层布线
+
+~pcb_route_pad_to_pad~ 现在支持跨层布线。当起始焊盘和目标焊盘位于不同铜层时，路由器会为每个布线层构建独立的网格地图，运行多层 A* 搜索，在合法位置插入过孔完成层间切换。
+
+*** LLM 调用重试
+
+LLM 调用遇到 ~503~ 、 ~429~ 、 ~502~ 等临时服务器错误时自动重试，重试采用 1.0 ± 0.5 秒的随机抖动延迟，避免多个客户端同时重试造成服务端压力。
+
+** 结语
+
+这次更新进一步补齐了插件的基础功能，下一阶段我会用 KiCad AI Assistant 来设计一块 PCB ，俗称“吃自己的狗粮”，目的是优化现有工具的调用效率和组合关系。希望大家能多提意见，欢迎加入技术交流群交流意见。
+
+[[/images/kicad-plugin-wexin-group-chat4.png]]
+
+** 参考
+
+- 代码仓库：https://github.com/paul356/KiCad-AI-Assistant
+- PyPI 包：https://pypi.org/project/kcaa/
+- PCB 布线指南：https://github.com/paul356/KiCad-AI-Assistant/blob/main/docs/pcb-routing.md
+- PNS 多层布线设计：https://github.com/paul356/KiCad-AI-Assistant/blob/main/docs/pns-multi-layer-design.md
